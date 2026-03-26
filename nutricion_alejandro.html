@@ -4,722 +4,1049 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan Nutricional · Alejandro García Monteagudo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0c10;
-  --bg2: #10141c;
-  --bg3: #161b26;
-  --border: #1e2535;
-  --border2: #252d40;
-  --def: #38bdf8;
-  --def-bg: rgba(56,189,248,0.08);
-  --def-border: rgba(56,189,248,0.25);
-  --vol: #fb923c;
-  --vol-bg: rgba(251,146,60,0.08);
-  --vol-border: rgba(251,146,60,0.25);
-  --man: #a3e635;
-  --man-bg: rgba(163,230,53,0.08);
-  --man-border: rgba(163,230,53,0.25);
-  --new: #c084fc;
-  --new-bg: rgba(192,132,252,0.08);
-  --new-border: rgba(192,132,252,0.3);
-  --text: #e2e8f0;
-  --text2: #94a3b8;
-  --text3: #64748b;
-  --accent: #a3e635;
-  --up: #4ade80;
-  --down: #f87171;
-  --eq: #94a3b8;
-  --cell-w: 148px;
-  --label-w: 220px;
+  --bg: #080b11; --bg2: #0e1320; --bg3: #141928; --bg4: #1a2035;
+  --border: #1e2738; --border2: #243048;
+  --def: #38bdf8; --def-bg: rgba(56,189,248,.07); --def-bd: rgba(56,189,248,.2);
+  --vol: #fb923c; --vol-bg: rgba(251,146,60,.07); --vol-bd: rgba(251,146,60,.2);
+  --man: #a3e635; --man-bg: rgba(163,230,53,.07); --man-bd: rgba(163,230,53,.2);
+  --new: #c084fc; --new-bg: rgba(192,132,252,.07); --new-bd: rgba(192,132,252,.3);
+  --t1: #e2e8f0; --t2: #94a3b8; --t3: #64748b; --t4: #3d4f6a;
+  --green: #4ade80; --red: #f87171; --gold: #fbbf24; --accent: #a3e635;
+  --c-carb: #fb923c; --c-prot: #38bdf8; --c-fat: #a3e635; --c-kcal: #c084fc;
 }
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--t1);font-family:'Syne',sans-serif;min-height:100%}
 
-* { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; background:var(--bg); color:var(--text); font-family:'Syne', sans-serif; }
+/* ── NAV TABS ── */
+.top-nav{display:flex;align-items:center;gap:0;padding:0 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.nav-logo{font-size:13px;font-weight:800;color:var(--accent);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:16px;white-space:nowrap;letter-spacing:-.3px}
+.nav-tab{padding:14px 18px;font-size:12px;font-weight:600;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap}
+.nav-tab:hover{color:var(--t2)}
+.nav-tab.active{color:var(--t1);border-bottom-color:var(--accent)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn-sm{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;cursor:pointer;transition:.2s;border:none}
+.btn-primary{background:var(--accent);color:#080b11}
+.btn-primary:hover{opacity:.85}
+.btn-ghost{background:transparent;color:var(--t3);border:1px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--new);color:var(--new)}
+.btn-danger{background:transparent;color:var(--red);border:1px solid rgba(248,113,113,.3)}
+.btn-danger:hover{background:rgba(248,113,113,.1)}
 
-/* ── HEADER ── */
-.header { padding: 28px 28px 0; display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; }
-.header-left h1 { font-size:22px; font-weight:800; color:var(--accent); letter-spacing:-0.5px; }
-.header-left p { font-size:12px; color:var(--text3); margin-top:4px; font-family:'DM Mono',monospace; }
-.badge-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-.badge { font-family:'DM Mono',monospace; font-size:11px; padding:3px 10px; border-radius:20px; font-weight:500; }
-.badge-def { background:var(--def-bg); color:var(--def); border:1px solid var(--def-border); }
-.badge-vol { background:var(--vol-bg); color:var(--vol); border:1px solid var(--vol-border); }
-.badge-man { background:var(--man-bg); color:var(--man); border:1px solid var(--man-border); }
+/* ── PANELS ── */
+.panel{display:none;padding:20px 24px 40px}
+.panel.active{display:block}
 
-/* ── ADD MONTH PANEL ── */
-.add-panel { margin:20px 28px 0; background:var(--bg2); border:1px solid var(--border2); border-radius:14px; padding:18px 20px; }
-.add-panel h3 { font-size:13px; font-weight:700; color:var(--new); margin-bottom:14px; letter-spacing:0.3px; }
-.add-form { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; }
-.form-group { display:flex; flex-direction:column; gap:5px; }
-.form-group label { font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.5px; }
-.form-group input, .form-group select {
-  background:var(--bg3); border:1px solid var(--border2); color:var(--text);
-  font-family:'DM Mono',monospace; font-size:13px; padding:7px 12px; border-radius:8px;
-  outline:none; transition:border-color .2s;
-}
-.form-group input:focus, .form-group select:focus { border-color:var(--new); }
-.form-group select option { background:var(--bg3); }
-.btn-add {
-  background:var(--new); color:#0a0c10; font-family:'Syne',sans-serif;
-  font-weight:700; font-size:12px; padding:8px 20px; border:none;
-  border-radius:8px; cursor:pointer; transition:opacity .2s; white-space:nowrap;
-}
-.btn-add:hover { opacity:0.85; }
-.btn-clear { background:transparent; color:var(--text3); font-family:'Syne',sans-serif; font-weight:600; font-size:12px; padding:8px 14px; border:1px solid var(--border2); border-radius:8px; cursor:pointer; }
-.btn-clear:hover { border-color:var(--down); color:var(--down); }
+/* ── SECTION HEADERS ── */
+.section-h{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
+.section-h::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ── TABLE CONTAINER ── */
-.table-wrap { margin:20px 28px 0; overflow-x:auto; border-radius:14px; border:1px solid var(--border); }
-.table-scroll { overflow-x:auto; }
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.card-title{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
 
-table { border-collapse:collapse; width:max-content; min-width:100%; }
+/* ── BADGES ── */
+.badge{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.b-def{background:var(--def-bg);color:var(--def);border:1px solid var(--def-bd)}
+.b-vol{background:var(--vol-bg);color:var(--vol);border:1px solid var(--vol-bd)}
+.b-man{background:var(--man-bg);color:var(--man);border:1px solid var(--man-bd)}
+.b-new{background:var(--new-bg);color:var(--new);border:1px solid var(--new-bd)}
 
-/* Sticky label column */
-th.label-col, td.label-col {
-  position:sticky; left:0; z-index:10;
-  background:var(--bg2); width:var(--label-w); min-width:var(--label-w);
-  padding:0 14px; border-right:2px solid var(--border2);
-}
-td.label-col { background:var(--bg2); }
+/* ── MACRO PILLS ── */
+.macro-bar{display:flex;gap:6px;flex-wrap:wrap}
+.mpill{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:11px;padding:3px 10px;border-radius:8px}
+.mp-c{background:rgba(251,146,60,.12);color:var(--c-carb);border:1px solid rgba(251,146,60,.2)}
+.mp-p{background:rgba(56,189,248,.12);color:var(--c-prot);border:1px solid rgba(56,189,248,.2)}
+.mp-g{background:rgba(163,230,53,.12);color:var(--c-fat);border:1px solid rgba(163,230,53,.2)}
+.mp-k{background:rgba(192,132,252,.12);color:var(--c-kcal);border:1px solid rgba(192,132,252,.2)}
 
-/* Section header rows */
-tr.section-row td {
-  background:#0d1118; padding:6px 14px;
-  font-size:10px; font-weight:700; color:var(--text3);
-  text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border);
-}
-tr.section-row td.label-col { background:#0d1118; }
+/* ── FORM ── */
+.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:10px;color:var(--t3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.fg input,.fg select{background:var(--bg3);border:1px solid var(--border2);color:var(--t1);font-family:'DM Mono',monospace;font-size:12px;padding:7px 11px;border-radius:8px;outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus{border-color:var(--new)}
+.fg select option{background:var(--bg3)}
 
-/* Regular cells */
-th { 
-  background:var(--bg2); font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
-  text-transform:uppercase; letter-spacing:0.5px; color:var(--text2);
-  padding:10px 0; text-align:center; border-bottom:2px solid var(--border2);
-  width:var(--cell-w); min-width:var(--cell-w);
-}
-td {
-  font-family:'DM Mono',monospace; font-size:12px; color:var(--text);
-  padding:7px 10px; text-align:center; border-bottom:1px solid var(--border);
-  width:var(--cell-w); min-width:var(--cell-w);
-}
-td.label-col {
-  font-family:'Syne',sans-serif; font-size:12px; font-weight:500;
-  color:var(--text2); text-align:left; padding:7px 14px;
-}
-td.label-col.indent { padding-left:26px; color:var(--text3); font-size:11px; }
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin-top:12px}
+table{border-collapse:collapse;width:max-content;min-width:100%}
+th.sticky,td.sticky{position:sticky;left:0;z-index:5;background:var(--bg2)}
+th{background:var(--bg2);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);padding:8px 0;text-align:center;border-bottom:2px solid var(--border2);width:150px;min-width:150px}
+th.sticky{width:200px;min-width:200px;text-align:left;padding:8px 14px;border-right:2px solid var(--border2)}
+td{font-family:'DM Mono',monospace;font-size:11px;color:var(--t1);padding:6px 10px;text-align:center;border-bottom:1px solid var(--border);width:150px;min-width:150px}
+td.sticky{font-family:'Syne',sans-serif;font-size:11px;color:var(--t2);text-align:left;padding:6px 14px;background:var(--bg2);border-right:2px solid var(--border)}
+td.ind{padding-left:24px;color:var(--t3);font-size:10px}
+tr.sec-row td{background:#0a0e17;padding:5px 14px;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+tr.sec-row td.sticky{background:#0a0e17}
+tr:not(.sec-row):hover td:not(.sticky){background:rgba(255,255,255,.015)}
+.th-inner{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 8px}
+.th-mon{font-size:11px;font-weight:800;color:var(--t1)}
+.th-pes{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)}
+th.t-def{border-top:3px solid var(--def)}
+th.t-vol{border-top:3px solid var(--vol)}
+th.t-man{border-top:3px solid var(--man)}
+th.t-new{border-top:3px solid var(--new);background:rgba(192,132,252,.04)}
+td.t-new{background:rgba(192,132,252,.02)}
+td.up::after{content:' ↑';color:var(--vol);font-size:9px}
+td.down::after{content:' ↓';color:var(--def);font-size:9px}
+td.na{color:var(--t4)}
+td.macro-c{color:var(--c-carb);font-weight:500}
+td.macro-p{color:var(--c-prot);font-weight:500}
+td.macro-g{color:var(--c-fat);font-weight:500}
+td.macro-k{color:var(--c-kcal);font-weight:500}
+td.macro-total{background:rgba(255,255,255,.03);font-weight:700}
 
-/* Phase header cells */
-th.col-def { border-top:3px solid var(--def); }
-th.col-vol { border-top:3px solid var(--vol); }
-th.col-man { border-top:3px solid var(--man); }
-th.col-new { border-top:3px solid var(--new); background:rgba(192,132,252,0.06); }
+/* ── FORMULA CARDS ── */
+.formula-box{background:var(--bg3);border-radius:10px;padding:12px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--t2);line-height:1.8;border-left:3px solid var(--accent)}
+.formula-box .hi{color:var(--accent);font-weight:500}
+.formula-box .var{color:var(--new)}
+.note-box{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.7}
+.note-box strong{color:var(--t1)}
+.note-box.warn{border-left:3px solid var(--gold);background:rgba(251,191,36,.04)}
+.note-box.info{border-left:3px solid var(--def)}
 
-/* Month label inside th */
-.th-inner { display:flex; flex-direction:column; align-items:center; gap:3px; padding:2px 8px; }
-.th-month { font-size:12px; font-weight:800; color:var(--text); }
-.th-phase { font-size:10px; padding:1px 8px; border-radius:10px; }
-.th-phase.def { background:var(--def-bg); color:var(--def); }
-.th-phase.vol { background:var(--vol-bg); color:var(--vol); }
-.th-phase.man { background:var(--man-bg); color:var(--man); }
-.th-phase.new { background:var(--new-bg); color:var(--new); }
-.th-peso { font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); }
+/* ── PALANCA CARDS ── */
+.p-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.p-icon{font-size:20px;margin-bottom:8px}
+.p-title{font-size:12px;font-weight:700;margin-bottom:4px}
+.p-when{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);background:var(--bg3);padding:2px 8px;border-radius:6px;display:inline-block;margin-bottom:8px}
+.p-body{font-size:11px;color:var(--t2);line-height:1.65}
 
-/* Value cells */
-td.val { font-weight:500; }
-td.val.up::after { content:' ↑'; color:var(--vol); font-size:10px; }
-td.val.down::after { content:' ↓'; color:var(--def); font-size:10px; }
-td.val-peso { font-size:15px; font-weight:500; color:var(--text); }
-td.val-def { color:var(--def); }
-td.val-vol { color:var(--vol); }
-td.val-man { color:var(--man); }
-td.val-new { color:var(--new); font-weight:700; }
-td.na { color:var(--border2); font-size:10px; }
-td.note { font-family:'Syne',sans-serif; font-size:11px; color:var(--text2); line-height:1.4; padding:8px 12px; text-align:left; }
-td.objective { font-family:'Syne',sans-serif; font-size:11px; line-height:1.5; }
+/* ── GITHUB PANEL ── */
+.gh-step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.gh-step:last-child{border-bottom:none}
+.gh-num{background:var(--accent);color:#080b11;font-weight:800;font-size:12px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gh-step-body{flex:1}
+.gh-step-body h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.gh-step-body p{font-size:11px;color:var(--t2);line-height:1.6}
+.code-block{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);margin-top:8px;overflow-x:auto}
+.tag-chip{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;background:var(--bg4);color:var(--t2);padding:1px 7px;border-radius:4px;border:1px solid var(--border2)}
 
-/* Row hover */
-tr:not(.section-row):hover td:not(.label-col) { background:rgba(255,255,255,0.02); }
-
-/* Highlight new col */
-td.col-new { background:rgba(192,132,252,0.03); }
-th.col-new { background:rgba(192,132,252,0.06); }
-
-/* ── PALANCAS ── */
-.palancas { margin:24px 28px 0; }
-.palancas h2 { font-size:16px; font-weight:800; color:var(--accent); margin-bottom:4px; }
-.palancas > p { font-size:12px; color:var(--text3); margin-bottom:16px; }
-.palanca-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:12px; }
-.palanca-card { background:var(--bg2); border:1px solid var(--border2); border-radius:12px; padding:14px 16px; }
-.palanca-card:hover { border-color:var(--border2); }
-.palanca-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
-.palanca-icon { font-size:18px; }
-.palanca-title { font-size:13px; font-weight:700; }
-.palanca-when { font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); margin-bottom:8px; padding:3px 8px; background:var(--bg3); border-radius:6px; display:inline-block; }
-.palanca-text { font-size:11px; color:var(--text2); line-height:1.65; }
-.palanca-card.hc-up .palanca-title { color:#fb923c; }
-.palanca-card.hc-down .palanca-title { color:#38bdf8; }
-.palanca-card.prot-up .palanca-title { color:#4ade80; }
-.palanca-card.prot-down .palanca-title { color:#fbbf24; }
-.palanca-card.fat .palanca-title { color:#e879f9; }
-.palanca-card.cereal .palanca-title { color:#f472b6; }
-.palanca-card.kcal .palanca-title { color:#a3e635; }
-
-/* ── FOOTER ── */
-.footer { margin:24px 28px 32px; padding:14px 18px; background:var(--bg2); border-radius:10px; border:1px solid var(--border); }
-.footer p { font-size:11px; color:var(--text3); line-height:1.7; }
-.footer strong { color:var(--text2); }
-
-/* Delete btn */
-.btn-del { background:none; border:none; color:var(--text3); cursor:pointer; font-size:11px; margin-top:3px; opacity:0.5; }
-.btn-del:hover { opacity:1; color:var(--down); }
+/* Status bar */
+#status-bar{position:fixed;bottom:16px;right:16px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;font-size:11px;font-family:'DM Mono',monospace;color:var(--green);z-index:999;display:none;box-shadow:0 4px 20px rgba(0,0,0,.4)}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <h1>PLAN NUTRICIONAL — HISTÓRICO Y CALCULADORA</h1>
-    <p>Alejandro García Monteagudo · 1.93m · Endo-mesomorfo · 6 días/semana · Hipertrofia + Cardio · Creatina 9g/día</p>
-    <div class="badge-row">
-      <span class="badge badge-def">🔵 DEFINICIÓN</span>
-      <span class="badge badge-vol">🟠 VOLUMEN</span>
-      <span class="badge badge-man">🟢 MANTENIMIENTO</span>
+<!-- NAV -->
+<nav class="top-nav">
+  <div class="nav-logo">ZTH · NUTRICIÓN</div>
+  <div class="nav-tab active" onclick="showPanel('tabla')">📊 Tabla histórica</div>
+  <div class="nav-tab" onclick="showPanel('macros')">🧮 Macros diarios</div>
+  <div class="nav-tab" onclick="showPanel('formulas')">📐 Criterios y fórmulas</div>
+  <div class="nav-tab" onclick="showPanel('palancas')">🎛️ Palancas</div>
+  <div class="nav-tab" onclick="showPanel('github')">🐙 GitHub</div>
+  <div class="nav-right">
+    <button class="btn-sm btn-ghost" onclick="exportJSON()">⬇ Exportar JSON</button>
+    <label class="btn-sm btn-ghost" style="cursor:pointer">⬆ Importar <input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════
+     PANEL 1: TABLA HISTÓRICA + AÑADIR MES
+══════════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-tabla">
+
+  <!-- ADD FORM -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">➕ Añadir nuevo mes</div>
+    <div class="form-row">
+      <div class="fg"><label>Mes</label><input id="i-mes" placeholder="May 2026" style="width:110px"></div>
+      <div class="fg"><label>Peso (kg)</label><input id="i-peso" type="number" step="0.1" placeholder="93.6" style="width:90px"></div>
+      <div class="fg"><label>Fase</label>
+        <select id="i-fase" style="width:195px">
+          <option value="DEF_INICIO">Definición — inicio (peso alto)</option>
+          <option value="DEF_MED" selected>Definición — media</option>
+          <option value="DEF_PROF">Definición — profunda</option>
+          <option value="VOL">Volumen</option>
+          <option value="MAN">Mantenimiento</option>
+        </select>
+      </div>
+      <div class="fg"><label>Ritmo de peso</label>
+        <select id="i-tend" style="width:220px">
+          <option value="ok">✅ En línea con objetivo</option>
+          <option value="rapido">⚡ Más rápido de lo esperado</option>
+          <option value="lento">⏳ Más lento de lo esperado</option>
+          <option value="parado">🛑 Estancado (&lt;0.3 kg/mes)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Edad (para TDEE)</label><input id="i-edad" type="number" placeholder="27" style="width:80px"></div>
+      <button class="btn-sm btn-primary" onclick="addMonth()" style="height:32px">CALCULAR →</button>
+      <button class="btn-sm btn-ghost" onclick="clearDynamic()" style="height:32px">Limpiar</button>
+    </div>
+    <div id="calc-result" style="margin-top:10px;display:none"></div>
+  </div>
+
+  <div class="table-wrap"><table id="main-table"></table></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PANEL 2: MACROS DIARIOS
+══════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-macros">
+  <div class="section-h">Macros calculados por comida y totales diarios</div>
+  <div class="note-box info" style="margin-bottom:16px;font-size:11px">
+    <strong>Base de datos nutricional usada:</strong> valores de composición por 100g en crudo (BEDCA/USDA). Se multiplican por la cantidad de cada alimento en cada mes/fase y se suman por toma. Los valores <em>cocinados</em> difieren pero la referencia siempre es en crudo como indica tu plan.
+  </div>
+  <div id="macro-panel-content"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PANEL 3: CRITERIOS Y FÓRMULAS
+══════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-formulas">
+  <div class="section-h">¿Cómo se calculan las cantidades?</div>
+
+  <div class="grid2" style="gap:14px;margin-bottom:16px">
+    <div class="note-box warn">
+      <strong>⚠️ Versión anterior (lookup table):</strong> La v1 de la herramienta no calculaba — simplemente asignaba valores fijos por categoría de fase basándose en el historial. Útil como referencia pero no científico. Esta v2 añade cálculo real desde primeros principios.
+    </div>
+    <div class="note-box info">
+      <strong>✅ Esta versión (fórmulas reales):</strong> Calcula TDEE → objetivo calórico por fase → reparto de macros → cantidad de alimentos. Todo explicado y auditable aquí.
+    </div>
+  </div>
+
+  <div class="section-h">PASO 1 — Tasa metabólica basal (BMR)</div>
+  <div class="formula-box">
+    <span class="hi">Fórmula: Mifflin-St Jeor</span> (más precisa que Harris-Benedict para atletas)<br><br>
+    BMR = <span class="var">10 × peso_kg</span> + <span class="var">6.25 × altura_cm</span> − <span class="var">5 × edad</span> + 5<br><br>
+    Ejemplo con Alejandro (93.6 kg, 193 cm, 27 años):<br>
+    BMR = 10×93.6 + 6.25×193 − 5×27 + 5 = <span class="hi">936 + 1206.25 − 135 + 5 = 2012 kcal</span>
+  </div>
+
+  <div class="section-h">PASO 2 — TDEE (gasto total diario)</div>
+  <div class="formula-box">
+    <span class="hi">TDEE = BMR × Factor de actividad</span><br><br>
+    Multiplicadores:<br>
+    · Sedentario (0-1 días/semana): × 1.2<br>
+    · Ligeramente activo (1-3 días): × 1.375<br>
+    · Moderadamente activo (3-5 días): × 1.55<br>
+    · <span class="hi">Muy activo (6 días, hipertrofia + cardio): × 1.725</span> ← tu caso<br>
+    · Atleta de élite (2x/día): × 1.9<br><br>
+    Alejandro: TDEE = 2012 × 1.725 = <span class="hi">~3471 kcal/día de mantenimiento</span>
+  </div>
+
+  <div class="section-h">PASO 3 — Objetivo calórico por fase</div>
+  <div class="formula-box">
+    <span class="hi">DEFINICIÓN:</span> TDEE − 400 a − 600 kcal/día<br>
+    → Máximo déficit recomendado para preservar músculo: −500 kcal/día<br>
+    → Con Alejandro: 3471 − 500 = <span class="hi">~2971 kcal/día</span><br>
+    → Pérdida esperada: ~0.5 kg/semana = ~2 kg/mes (teórico)<br>
+    → En la práctica sale ~1.3 kg/mes (retención agua, creatina, variabilidad)<br><br>
+    <span class="hi">VOLUMEN:</span> TDEE + 200 a + 400 kcal/día<br>
+    → Superávit limpio para minimizar grasa: +300 kcal/día<br>
+    → Con Alejandro: 3471 + 300 = <span class="hi">~3771 kcal/día</span><br>
+    → Ganancia esperada: ~0.3 kg/semana = ~1.2 kg/mes<br><br>
+    <span class="hi">MANTENIMIENTO:</span> TDEE exacto = <span class="hi">~3471 kcal/día</span>
+  </div>
+
+  <div class="section-h">PASO 4 — Distribución de macros</div>
+  <div class="formula-box">
+    Criterio: endo-mesomorfo + hipertrofia + 6 días/semana<br><br>
+    <span class="hi">PROTEÍNA</span> (prioridad absoluta, antikatabolismo en déficit):<br>
+    · Definición: <span class="var">2.4 g × kg_peso_magro</span> (~75% del peso total)<br>
+    · Volumen: <span class="var">2.0 g × kg_peso_magro</span><br>
+    · Mantenimiento: <span class="var">2.2 g × kg_peso_magro</span><br>
+    → Ej. def 93.6 kg → peso magro ~76 kg → 76 × 2.4 = <span class="hi">~182 g proteína/día</span><br><br>
+    <span class="hi">GRASAS</span> (mínimo para función hormonal y salud):<br>
+    · Todas las fases: <span class="var">0.9–1.0 g × kg_peso</span><br>
+    → Ej. 93.6 × 0.9 = <span class="hi">~84 g grasa/día</span><br><br>
+    <span class="hi">HIDRATOS</span> (variable de ajuste — lo que "queda" de calorías):<br>
+    · HC = (Kcal_objetivo − Proteína×4 − Grasa×9) ÷ 4<br>
+    → Def: (2971 − 182×4 − 84×9) ÷ 4 = (2971 − 728 − 756) ÷ 4 = 1487÷4 = <span class="hi">~372 g HC/día</span><br>
+    → Vol: (3771 − 174×4 − 93×9) ÷ 4 = <span class="hi">~487 g HC/día</span>
+  </div>
+
+  <div class="section-h">PASO 5 — Conversión macros → gramos de alimento</div>
+  <div class="formula-box">
+    Cada alimento tiene un perfil nutricional conocido (base de datos abajo).<br>
+    Se resuelve un sistema: dado que queremos <span class="var">X g de HC</span> repartidos en comidas,<br>
+    ¿cuántos gramos de patata/arroz/pasta necesito?<br><br>
+    Ejemplo comida (50% de HC diarios):<br>
+    HC_comida = 372 × 0.5 = 186 g HC<br>
+    Si elige patata (17g HC/100g crudo): 186 ÷ 0.17 = <span class="hi">~1094g patata</span> → demasiado volumen<br>
+    Con arroz integral (75g HC/100g crudo): 186 ÷ 0.75 = <span class="hi">~248g arroz en crudo</span><br>
+    En la práctica se combina: ~75g arroz + ~150g patata = ~56+26 = 82g HC (una comida razonable)<br><br>
+    <span class="hi">El ajuste fino histórico</span> (lo que hace tu nutricionista) está dentro de estos rangos<br>
+    y es la combinación óptima para tu adherencia y digestión.
+  </div>
+
+  <div class="section-h">Base de datos nutricional (por 100g en crudo)</div>
+  <div class="table-wrap">
+    <table id="food-db-table"></table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PANEL 4: PALANCAS
+══════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-palancas">
+  <div class="section-h">Palancas nutricionales — qué, cuándo y por qué</div>
+  <div id="palancas-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PANEL 5: GITHUB
+══════════════════════════════════════════════════════ -->
+<div class="panel" id="panel-github">
+  <div class="section-h">Integración con GitHub</div>
+
+  <div class="grid2" style="margin-bottom:20px">
+    <div class="note-box info">
+      <strong>¿Para qué sirve?</strong> Cada vez que calcules un nuevo mes, los datos se guardan automáticamente como un archivo JSON en tu repositorio de GitHub. El historial de commits se convierte en el historial de tu plan nutricional. Puedes acceder a cualquier mes anterior, comparar, y la herramienta siempre carga los datos más recientes.
+    </div>
+    <div class="note-box warn">
+      <strong>Requisito:</strong> Un <em>Personal Access Token</em> de GitHub con permiso <code>repo</code> (o <code>contents:write</code> en fine-grained tokens). <strong>Nunca compartas este token.</strong> Si el repo es público, el JSON de tus dietas será visible — usa un repo privado.
+    </div>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">⚙️ Configuración GitHub</div>
+    <div class="form-row" style="margin-bottom:10px">
+      <div class="fg"><label>Usuario GitHub</label><input id="gh-user" placeholder="alejandrogarcia" style="width:180px"></div>
+      <div class="fg"><label>Repositorio</label><input id="gh-repo" placeholder="mi-nutricion" style="width:180px"></div>
+      <div class="fg"><label>Personal Access Token</label><input id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxx" style="width:240px"></div>
+      <button class="btn-sm btn-ghost" onclick="testGH()" style="height:32px">🔍 Probar conexión</button>
+      <button class="btn-sm btn-primary" onclick="saveGH()" style="height:32px">💾 Guardar config</button>
+    </div>
+    <div id="gh-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--t3)">Sin configurar</div>
+  </div>
+
+  <!-- HOW TO -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">📋 Cómo configurarlo paso a paso</div>
+    <div id="gh-steps"></div>
+  </div>
+
+  <!-- WHAT CHANGES -->
+  <div class="card">
+    <div class="card-title">🔧 Qué hace el código exactamente</div>
+    <div class="note-box" style="margin-bottom:10px">
+      Cuando pulsas "Guardar en GitHub" (tras añadir un mes), la herramienta llama a la API de GitHub:
+    </div>
+    <div class="code-block">PUT https://api.github.com/repos/{user}/{repo}/contents/dietas/{mes}.json<br><br>Headers:<br>  Authorization: Bearer {token}<br>  Content-Type: application/json<br><br>Body:<br>  {<br>    "message": "Añadir dieta {mes}",<br>    "content": btoa(JSON.stringify(dietaData))  // base64<br>  }</div>
+    <div class="note-box" style="margin-top:10px">
+      Al cargar la página, también hace un <code>GET</code> al repo para recuperar todos los JSON de <code>/dietas/</code> y reconstruye la tabla. Así la herramienta funciona aunque borres el historial local.
     </div>
   </div>
 </div>
 
-<!-- ADD MONTH FORM -->
-<div class="add-panel">
-  <h3>➕ AÑADIR NUEVO MES</h3>
-  <div class="add-form">
-    <div class="form-group">
-      <label>Mes / Año</label>
-      <input type="text" id="inp-mes" placeholder="May 2026" style="width:120px">
-    </div>
-    <div class="form-group">
-      <label>Peso actual (kg)</label>
-      <input type="number" id="inp-peso" placeholder="93.6" step="0.1" style="width:100px">
-    </div>
-    <div class="form-group">
-      <label>Fase</label>
-      <select id="inp-fase" style="width:170px">
-        <option value="DEF_INICIO">Definición inicio (peso alto)</option>
-        <option value="DEF_MED" selected>Definición media</option>
-        <option value="DEF_PROF">Definición profunda</option>
-        <option value="VOL">Volumen</option>
-        <option value="MAN">Mantenimiento</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Tendencia de peso</label>
-      <select id="inp-tend" style="width:170px">
-        <option value="ok">✅ En línea con objetivo</option>
-        <option value="rapido">⚡ Bajando/subiendo más rápido</option>
-        <option value="lento">⏳ Bajando/subiendo más lento</option>
-        <option value="parado">🛑 Peso estancado</option>
-      </select>
-    </div>
-    <button class="btn-add" onclick="addMonth()">CALCULAR Y AÑADIR →</button>
-    <button class="btn-clear" onclick="clearDynamic()">Limpiar añadidos</button>
-  </div>
-</div>
-
-<!-- TABLE -->
-<div class="table-wrap">
-  <div class="table-scroll">
-    <table id="main-table">
-      <!-- Built by JS -->
-    </table>
-  </div>
-</div>
-
-<!-- PALANCAS -->
-<div class="palancas">
-  <h2>🎛️ PALANCAS NUTRICIONALES</h2>
-  <p>Qué modificar, cuándo y por qué. Cada palanca actúa sobre un mecanismo fisiológico distinto.</p>
-  <div class="palanca-grid">
-
-    <div class="palanca-card hc-up">
-      <div class="palanca-header">
-        <span class="palanca-icon">🍚</span>
-        <span class="palanca-title">↑ Subir Hidratos (comida y cena)</span>
-      </div>
-      <div class="palanca-when">Cuándo: INICIO DE VOLUMEN o estancamiento muscular</div>
-      <p class="palanca-text">Los HC son el combustible primario del músculo. Al subir patata (+100g), arroz/pasta (+25g) y HC en cena (+100g), se genera un superávit calórico de ~350-400 kcal/día que habilita la síntesis proteica y el crecimiento muscular. En tu caso, el cambio DEF→VOL implica subir HC en todas las tomas simultáneamente: cereales desayuno de 40→60g, patata comida de 300→400g, patata cena de 200→300g. <strong>El objetivo es pesar +1 kg/mes con composición mayoritariamente muscular.</strong></p>
-    </div>
-
-    <div class="palanca-card hc-down">
-      <div class="palanca-header">
-        <span class="palanca-icon">📉</span>
-        <span class="palanca-title">↓ Bajar Hidratos (comida y cena)</span>
-      </div>
-      <div class="palanca-when">Cuándo: INICIO O PROFUNDIZACIÓN DE DEFINICIÓN</div>
-      <p class="palanca-text">Reducir HC es la palanca principal de tu nutricionista en cada ciclo. Cada -100g de patata o -25g de arroz reduce ~90-100 kcal/día. La secuencia natural: primero bajan HC de comida principal (patata 350→300g), luego HC de cena (200→200g mantenido inicialmente), y en definición profunda bajan ambos. Los cereales del desayuno bajan de 60→40-45g al entrar en definición. <strong>El objetivo es perder 0.75-1.5 kg/mes preservando músculo.</strong></p>
-    </div>
-
-    <div class="palanca-card prot-up">
-      <div class="palanca-header">
-        <span class="palanca-icon">🥩</span>
-        <span class="palanca-title">↑ Subir Proteína comida</span>
-      </div>
-      <div class="palanca-when">Cuándo: DEFINICIÓN PROLONGADA (>2 meses) o estancamiento</div>
-      <p class="palanca-text">En definición avanzada (Jun 2025, ahora Abr 2026), la proteína de comida sube aunque los HC bajen: pollo 170→200g, pescado 180→210g. Esto sirve para tres cosas: (1) Preservar masa muscular en déficit calórico prolongado —la proteína tiene efecto anti-catabólico—; (2) Mayor efecto térmico (la proteína gasta ~25% de sus calorías en digerirse vs 8% de HC); (3) Mayor saciedad, lo que facilita mantener el plan. <strong>No engorda porque sustituye calorías de HC.</strong></p>
-    </div>
-
-    <div class="palanca-card cereal">
-      <div class="palanca-header">
-        <span class="palanca-icon">🥣</span>
-        <span class="palanca-title">↑↓ Ajustar cereales del desayuno</span>
-      </div>
-      <div class="palanca-when">Cuándo: CAMBIO DE FASE o ajuste fino de energía matinal</div>
-      <p class="palanca-text">Los cereales del desayuno (corn flakes / copos avena) actúan como señal metabólica de la fase. En DEF: 40-45g. En VOL: 60g. Este +15-20g parece pequeño (~70 kcal) pero tiene un efecto doble: (1) Añade glucosa matinal que potencia el entrenamiento en ayunas al ir al gym en mañanas; (2) Psicológicamente marca el "modo volumen". <strong>Cambiar solo cereales sin tocar comida y cena da un ajuste de +200-250 kcal/semana.</strong></p>
-    </div>
-
-    <div class="palanca-card fat">
-      <div class="palanca-header">
-        <span class="palanca-icon">🥑</span>
-        <span class="palanca-title">↓ Reducir grasas (frutos secos / AOVE)</span>
-      </div>
-      <div class="palanca-when">Cuándo: DEFINICIÓN MUY ESTANCADA + agotados ajustes de HC</div>
-      <p class="palanca-text">Las grasas son la última palanca porque afectan hormonas (testosterona, cortisol) y absorción de vitaminas liposolubles. Tu nutricionista mantiene frutos secos en 15-20g incluso en definición, lo cual es correcto. Solo si llevas 4+ semanas sin bajar peso habiendo ajustado HC: reducir frutos secos de 20→10g en merienda ahorra ~55 kcal/día. <strong>Nunca eliminar AOVE de cocción ni reducir grasas a 0 — riesgo hormonal y de recuperación.</strong></p>
-    </div>
-
-    <div class="palanca-card kcal">
-      <div class="palanca-header">
-        <span class="palanca-icon">🥛</span>
-        <span class="palanca-title">↓↑ Ajustar merienda (kéfir/proteína)</span>
-      </div>
-      <div class="palanca-when">Cuándo: AJUSTE FINO en fases intermedias</div>
-      <p class="palanca-text">La merienda ha evolucionado: en Feb/Jun 2025 era kéfir 200/170g + proteína + frutos secos (compleja, ~320-380 kcal). En volumen volvió a 200g de kéfir. En la definición de 2026 se simplificó a solo 1 scoop proteína con agua (~120 kcal). Este ajuste ahorra ~200-250 kcal/día sin comprometer proteína total. <strong>Es la palanca más agresiva en calorías sin tocar macrocomidas.</strong></p>
-    </div>
-
-  </div>
-</div>
-
-<div class="footer">
-  <p><strong>Notas:</strong> Todos los pesos en <strong>crudo</strong>. Verduras y hortalizas sin límite. Creatina 9g/día siempre. Agua abundante. Mínimo 2h desde última comida hasta dormir. Los valores marcados con <span style="color:var(--new)">★</span> son calculados automáticamente. Valores con <span style="color:var(--vol)">↑</span> aumentaron vs columna anterior; <span style="color:var(--def)">↓</span> disminuyeron.</p>
-</div>
+<div id="status-bar"></div>
 
 <script>
-// ─── DATA ───────────────────────────────────────────────
+// ══════════════════════════════════════════════════
+// BASE DE DATOS NUTRICIONAL (por 100g en crudo / 100ml)
+// Fuentes: BEDCA (España), USDA FoodData Central
+// ══════════════════════════════════════════════════
+const FOODS = {
+  // id: [nombre, HC, PRO, GRAS, kcal, notas]
+  leche_semi:      ['Leche semidesnatada (100ml)',   4.8,  3.5,  1.7,  46,  'por 100ml'],
+  proteina_polvo:  ['Proteína en polvo whey',         4.0, 75.0,  5.0, 357,  'varía según marca'],
+  corn_flakes:     ['Corn flakes',                   83.0,  7.0,  1.0, 369,  ''],
+  avena_copos:     ['Copos de avena',                60.0, 13.0,  7.0, 379,  ''],
+  frutos_secos:    ['Frutos secos mix',              20.0, 15.0, 50.0, 575,  'media almendras/nueces'],
+  pan_integral:    ['Pan integral centeno/espelta',  42.0,  8.5,  2.5, 230,  ''],
+  queso_cabra:     ['Queso de cabra/oveja',           0.5, 20.0, 18.0, 250,  ''],
+  pollo_pechuga:   ['Pechuga de pollo (crudo)',       0.0, 23.0,  2.5, 112,  ''],
+  pavo_filete:     ['Pavo filete (crudo)',            0.0, 22.5,  1.5, 104,  ''],
+  pesc_blanco:     ['Pescado blanco merluza (crudo)', 0.0, 17.5,  1.5,  84,  ''],
+  salmon:          ['Salmón (crudo)',                 0.0, 20.0, 13.0, 196,  ''],
+  carne_roja:      ['Carne roja magra (crudo)',       0.0, 21.0,  8.0, 158,  ''],
+  cerdo_iberico:   ['Lomo cerdo ibérico (crudo)',     0.0, 21.5,  6.0, 143,  ''],
+  legumbres_bote:  ['Legumbres bote (garbanzos)',    15.0,  7.0,  1.5, 100,  'peso escurrido'],
+  patata:          ['Patata (cruda)',                17.0,  2.0,  0.1,  77,  ''],
+  boniato:         ['Boniato (crudo)',               20.0,  1.5,  0.1,  86,  ''],
+  arroz_integral:  ['Arroz integral (crudo)',        75.0,  8.0,  2.0, 355,  ''],
+  pasta_integral:  ['Pasta integral (cruda)',        63.0, 13.0,  2.5, 330,  ''],
+  noquis:          ['Ñoquis',                        29.0,  3.0,  1.2, 138,  ''],
+  kefir:           ['Kéfir natural',                  4.5,  3.5,  1.5,  47,  ''],
+  huevo:           ['Huevo entero',                   0.5, 13.0, 11.0, 155,  'por 100g (~2 huevos = 100g netos)'],
+  aove:            ['AOVE (aceite oliva)',             0.0,  0.0,100.0, 900,  'por 100ml'],
+  aguacate:        ['Aguacate',                       2.0,  2.0, 15.0, 160,  ''],
+  chocolate_85:    ['Chocolate 85% (1 onza≈10g)',    14.0,  5.5, 45.0, 590,  ''],
+  cacao_polvo:     ['Cacao puro en polvo',           10.0, 20.0, 11.0, 216,  ''],
+  coco_rallado:    ['Coco rallado',                   6.0,  4.0, 62.0, 604,  ''],
+  tortita_maiz:    ['Tortitas de maíz (1u≈9g)',      82.0,  7.0,  1.0, 370,  ''],
+  tortita_trig:    ['Tortitas integrales trigo (1u≈30g)', 46.0, 8.0, 3.0, 243, ''],
+};
+
+// ══════════════════════════════════════════════════
+// HISTÓRICO — datos reales de los PDFs
+// ══════════════════════════════════════════════════
 const HISTORICAL = [
   {
-    id: 'feb25', mes: 'Feb 2025', peso: 93.0, pesoFin: null, fase: 'DEF',
-    colClass: 'col-def',
-    desayuno: {
-      leche: '300ml', proteina: '30g', cereales: '40g CF',
-      frutosSecos: '20g', panSalado: '1 reb.', queso: '1 loncha',
-      kefirOp3: '—', coposOp3: '—'
-    },
-    almuerzo: { frutosSecos: '15g', fruta: '1 pieza', protExtra: '—' },
-    comidaProt: { pollo: '170g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '170g', legumbres: '250g+huevo' },
-    comidaHC: { patata: '350g', arroz: '90g', pasta: '90g', noquis: '180g' },
-    merienda: { kefir: '200g', protMerienda: '15g', frutosSecos: '15g' },
-    cenaProt: { pollo: '170g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '170g' },
-    cenaHC: { patata: '200g', arrozPasta: '—', noquis: '—' },
-    objetivo: '−0.7/0.8 kg/mes\nObj: llegar a ~92 kg',
-    palanca: 'Inicio déficit. HC moderados para crear déficit gradual sin comprometer rendimiento. Proteína alta desde el principio para preservar músculo.'
+    id:'feb25', mes:'Feb 2025', peso:93.0, fase:'DEF', isNew:false,
+    desayuno:{leche:'300ml',prot:'30g',cereales:'40g CF',fs:'20g',panSal:'1 reb.',queso:'1 loncha',kef3:'—',cop3:'—'},
+    almuerzo:{fs:'15g',fruta:'1 pieza',extra:'—'},
+    cP:{pollo:'170g',pescB:'180g',pescA:'170g',carne:'170g',legumb:'250g+1 huevo'},
+    cHC:{patata:'350g',arroz:'90g',pasta:'90g',noquis:'180g'},
+    mer:{kefir:'200g',prot:'15g',fs:'15g'},
+    ceP:{pollo:'170g',pescB:'180g',pescA:'170g',carne:'170g'},
+    ceHC:{patata:'200g',arpas:'—',noquis:'—'},
+    obj:'−0.7/0.8 kg/mes → ~92 kg',
+    pal:'Inicio déficit. HC comida moderados (patata 350g, arroz 90g). Merienda completa con kéfir 200g. Proteína estándar. Crear déficit gradual sin comprometer rendimiento.',
+    macroRef: {patata_c:350, arroz_c:90, pollo_c:170, kefir_m:200}
   },
   {
-    id: 'may25', mes: 'May 2025', peso: 91.7, pesoFin: null, fase: 'DEF',
-    colClass: 'col-def',
-    desayuno: {
-      leche: '300ml', proteina: '30g', cereales: '40g CF',
-      frutosSecos: '20g', panSalado: '1 reb.', queso: '1 loncha',
-      kefirOp3: '—', coposOp3: '—'
-    },
-    almuerzo: { frutosSecos: '15g', fruta: '1 pieza', protExtra: '—' },
-    comidaProt: { pollo: '170g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '170g', legumbres: '250g+huevo' },
-    comidaHC: { patata: '300g', arroz: '75g', pasta: '75g', noquis: '160g' },
-    merienda: { kefir: '170g', protMerienda: '15g', frutosSecos: '15g' },
-    cenaProt: { pollo: '170g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '170g' },
-    cenaHC: { patata: '200g', arrozPasta: '—', noquis: '—' },
-    objetivo: '−0.75/0.9 kg/mes\nObj: llegar a ~90 kg',
-    palanca: '↓ HC comida −15%: patata 350→300g, arroz 90→75g. Kéfir merienda 200→170g. Profundizar déficit a los 3 meses de plan.'
+    id:'may25', mes:'May 2025', peso:91.7, fase:'DEF', isNew:false,
+    desayuno:{leche:'300ml',prot:'30g',cereales:'40g CF',fs:'20g',panSal:'1 reb.',queso:'1 loncha',kef3:'—',cop3:'—'},
+    almuerzo:{fs:'15g',fruta:'1 pieza',extra:'—'},
+    cP:{pollo:'170g',pescB:'180g',pescA:'170g',carne:'170g',legumb:'250g+1 huevo'},
+    cHC:{patata:'300g',arroz:'75g',pasta:'75g',noquis:'160g'},
+    mer:{kefir:'170g',prot:'15g',fs:'15g'},
+    ceP:{pollo:'170g',pescB:'180g',pescA:'170g',carne:'170g'},
+    ceHC:{patata:'200g',arpas:'—',noquis:'—'},
+    obj:'−0.75/0.9 kg/mes → ~90 kg',
+    pal:'↓ HC comida −15%: patata 350→300g, arroz 90→75g. ↓ Kéfir 200→170g. Profundizar déficit tras 3 meses de plan. Proteína sin cambios.',
+    macroRef: {patata_c:300, arroz_c:75, pollo_c:170, kefir_m:170}
   },
   {
-    id: 'jun25', mes: 'Jun 2025', peso: 90.5, pesoFin: 89.9, fase: 'DEF',
-    colClass: 'col-def',
-    desayuno: {
-      leche: '300ml', proteina: '30g', cereales: '40g CF',
-      frutosSecos: '20g', panSalado: '1 reb.', queso: '1 loncha',
-      kefirOp3: '—', coposOp3: '—'
-    },
-    almuerzo: { frutosSecos: '15g', fruta: '1 pieza', protExtra: '—' },
-    comidaProt: { pollo: '200g', pescBlanco: '210g', pescAzul: '190g', carneRoja: '200g', legumbres: '250g+huevo+atún' },
-    comidaHC: { patata: '300g', arroz: '75g', pasta: '75g', noquis: '160g' },
-    merienda: { kefir: '170g', protMerienda: '15g', frutosSecos: '15g' },
-    cenaProt: { pollo: '170g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '170g' },
-    cenaHC: { patata: '200g', arrozPasta: '—', noquis: '—' },
-    objetivo: '−0.75 kg/mes\nObj: consolidar <90 kg',
-    palanca: '↑ Proteína comida +18%: pollo 170→200g, pescado 180→210g. HC sin cambio. Máxima preservación muscular en definición profunda prolongada.'
+    id:'jun25', mes:'Jun 2025', peso:90.3, fase:'DEF', isNew:false,
+    desayuno:{leche:'300ml',prot:'30g',cereales:'40g CF',fs:'20g',panSal:'1 reb.',queso:'1 loncha',kef3:'—',cop3:'—'},
+    almuerzo:{fs:'15g',fruta:'1 pieza',extra:'—'},
+    cP:{pollo:'200g',pescB:'210g',pescA:'190g',carne:'200g',legumb:'250g+1 huevo+atún'},
+    cHC:{patata:'300g',arroz:'75g',pasta:'75g',noquis:'160g'},
+    mer:{kefir:'170g',prot:'15g',fs:'15g'},
+    ceP:{pollo:'170g',pescB:'180g',pescA:'170g',carne:'170g'},
+    ceHC:{patata:'200g',arpas:'—',noquis:'—'},
+    obj:'−0.75 kg/mes → consolidar <90 kg',
+    pal:'↑ Proteína comida +18%: pollo 170→200g, pescado 180→210g. HC sin cambio. Estrategia anti-catabólica en definición profunda prolongada (>4 meses). Efecto térmico adicional.',
+    macroRef: {patata_c:300, arroz_c:75, pollo_c:200, kefir_m:170}
   },
   {
-    id: 'sep25', mes: 'Sep 2025', peso: 91.0, pesoFin: null, fase: 'VOL',
-    colClass: 'col-vol',
-    desayuno: {
-      leche: '300ml SL', proteina: '30g', cereales: '60g CF',
-      frutosSecos: '25g', panSalado: '2 reb.', queso: '20g',
-      kefirOp3: '200g kéfir', coposOp3: '40g copos'
-    },
-    almuerzo: { frutosSecos: '15g', fruta: '1 pieza', protExtra: '2 lonchas pollo+queso' },
-    comidaProt: { pollo: '180g', pescBlanco: '190g', pescAzul: '190g', carneRoja: '180g', legumbres: '250g+huevo' },
-    comidaHC: { patata: '400g', arroz: '100g', pasta: '100g', noquis: '190g' },
-    merienda: { kefir: '170g', protMerienda: '15g', frutosSecos: '20g' },
-    cenaProt: { pollo: '170g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '170g' },
-    cenaHC: { patata: '300g', arrozPasta: '75g', noquis: '160g' },
-    objetivo: '+1.0/1.5 kg/mes\nObj: llegar a ~94 kg limpio',
-    palanca: 'ENTRADA VOLUMEN. ↑ HC comida +33% (patata 300→400g, arroz 75→100g). ↑ HC cena +50% (patata 200→300g, aparece arroz). ↑ Cereales 40→60g. Almuerzo reforzado con proteína extra.'
+    id:'sep25', mes:'Sep 2025', peso:91.0, fase:'VOL', isNew:false,
+    desayuno:{leche:'300ml SL',prot:'30g',cereales:'60g CF',fs:'25g',panSal:'2 reb.',queso:'20g',kef3:'200g kéfir',cop3:'40g copos'},
+    almuerzo:{fs:'15g',fruta:'1 pieza',extra:'pollo+queso havarti+tortitas maíz'},
+    cP:{pollo:'180g',pescB:'190g',pescA:'190g',carne:'180g',legumb:'250g+1 huevo'},
+    cHC:{patata:'400g',arroz:'100g',pasta:'100g',noquis:'190g'},
+    mer:{kefir:'170g',prot:'15g',fs:'20g'},
+    ceP:{pollo:'170g',pescB:'180g',pescA:'170g',carne:'170g'},
+    ceHC:{patata:'300g',arpas:'75g',noquis:'160g'},
+    obj:'+1.0/1.5 kg/mes → ~94 kg limpio',
+    pal:'ENTRADA VOLUMEN. ↑ HC comida +33% (patata 300→400g, arroz 75→100g). ↑ HC cena aparece (patata 200→300g + arroz). ↑ Cereales 40→60g. Almuerzo reforzado. Superávit ~+350 kcal/día.',
+    macroRef: {patata_c:400, arroz_c:100, pollo_c:180, kefir_m:170}
   },
   {
-    id: 'oct25', mes: 'Oct 2025', peso: 93.8, pesoFin: null, fase: 'VOL',
-    colClass: 'col-vol',
-    desayuno: {
-      leche: '300ml SL', proteina: '30g', cereales: '60g CF',
-      frutosSecos: '25g', panSalado: '2 reb.', queso: '20g',
-      kefirOp3: '200g kéfir', coposOp3: '40g copos'
-    },
-    almuerzo: { frutosSecos: '15g', fruta: '1 pieza', protExtra: 'pollo+queso havarti+2 tort.maíz' },
-    comidaProt: { pollo: '180g', pescBlanco: '190g', pescAzul: '190g', carneRoja: '180g', legumbres: '200g+huevo' },
-    comidaHC: { patata: '400g', arroz: '100g', pasta: '100g', noquis: '190g' },
-    merienda: { kefir: '200g', protMerienda: '15g', frutosSecos: '20g' },
-    cenaProt: { pollo: '190g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '190g' },
-    cenaHC: { patata: '300g', arrozPasta: '75g', noquis: '160g' },
-    objetivo: '+1.0/1.5 kg/mes\nObj: mantener ritmo, techo ~96 kg',
-    palanca: 'Mantenimiento superávit. Sin cambios vs Sep. Proteína cena aumentó levemente (+20g). Kéfir merienda volvió a 200g.'
+    id:'oct25', mes:'Oct 2025', peso:93.8, fase:'VOL', isNew:false,
+    desayuno:{leche:'300ml SL',prot:'30g',cereales:'60g CF',fs:'25g',panSal:'2 reb.',queso:'20g',kef3:'200g kéfir',cop3:'40g copos'},
+    almuerzo:{fs:'15g',fruta:'1 pieza',extra:'pollo+queso havarti+2 tortitas maíz'},
+    cP:{pollo:'180g',pescB:'190g',pescA:'190g',carne:'180g',legumb:'200g+1 huevo'},
+    cHC:{patata:'400g',arroz:'100g',pasta:'100g',noquis:'190g'},
+    mer:{kefir:'200g',prot:'15g',fs:'20g'},
+    ceP:{pollo:'190g',pescB:'180g',pescA:'170g',carne:'190g'},
+    ceHC:{patata:'300g',arpas:'75g',noquis:'160g'},
+    obj:'+1.0/1.5 kg/mes → techo ~96 kg',
+    pal:'Continuación volumen. Sin cambios mayores vs Sep. ↑ Proteína cena +20g. ↑ Kéfir merienda 170→200g. Ajuste fino para mantener ritmo de ganancia.',
+    macroRef: {patata_c:400, arroz_c:100, pollo_c:180, kefir_m:200}
   },
   {
-    id: 'ene26', mes: 'Ene 2026', peso: 98.1, pesoFin: null, fase: 'DEF',
-    colClass: 'col-def',
-    desayuno: {
-      leche: '300ml SL', proteina: '30g', cereales: '60g CF',
-      frutosSecos: '25g', panSalado: '2 reb.', queso: '20g',
-      kefirOp3: '200g kéfir', coposOp3: '40g copos'
-    },
-    almuerzo: { frutosSecos: '15g', fruta: '1 pieza', protExtra: '4 lonchas muslo pollo+queso havarti' },
-    comidaProt: { pollo: '180g', pescBlanco: '190g', pescAzul: '190g', carneRoja: '180g', legumbres: '200g+huevo' },
-    comidaHC: { patata: '400g', arroz: '100g', pasta: '100g', noquis: '190g' },
-    merienda: { kefir: '—', protMerienda: '25g (solo)', frutosSecos: '—' },
-    cenaProt: { pollo: '190g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '190g' },
-    cenaHC: { patata: '300g', arrozPasta: '75g', noquis: '160g' },
-    objetivo: '−1.5/1.8 kg/mes\nObj: bajar de 98.1 a <95 kg',
-    palanca: 'Transición Vol→Def post-navidades. Merienda simplificada: kéfir eliminado, solo 25g proteína (−200 kcal/día). HC comida y cena aún en valores volumen — ajuste gradual, peso muy alto.'
+    id:'ene26', mes:'Ene 2026', peso:98.1, fase:'DEF', isNew:false,
+    desayuno:{leche:'300ml SL',prot:'30g',cereales:'60g CF',fs:'25g',panSal:'80g pan int.',queso:'20g',kef3:'150g kéfir+150ml leche',cop3:'40g copos'},
+    almuerzo:{fs:'15g',fruta:'1 pieza',extra:'4 lonchas muslo pollo+queso havarti'},
+    cP:{pollo:'180g',pescB:'190g',pescA:'190g',carne:'180g',legumb:'200g+1 huevo'},
+    cHC:{patata:'400g',arroz:'100g',pasta:'100g',noquis:'190g'},
+    mer:{kefir:'—',prot:'25g solo',fs:'—'},
+    ceP:{pollo:'190g',pescB:'180g',pescA:'170g',carne:'190g'},
+    ceHC:{patata:'300g',arpas:'75g',noquis:'160g'},
+    obj:'−1.5/1.8 kg/mes → <95 kg',
+    pal:'Vol→Def post-navidades (98.1 kg). Merienda simplificada: kéfir eliminado, solo 25g proteína (−~200 kcal/día). HC comida/cena aún en valores volumen — ajuste gradual desde peso muy alto.',
+    macroRef: {patata_c:400, arroz_c:100, pollo_c:180, kefir_m:0}
   },
   {
-    id: 'feb26', mes: 'Feb 2026', peso: 96.3, pesoFin: null, fase: 'DEF',
-    colClass: 'col-def',
-    desayuno: {
-      leche: '300ml SL', proteina: '30g', cereales: '45g CF/avena',
-      frutosSecos: '25g', panSalado: '80g pan int.', queso: '20g',
-      kefirOp3: '150g kéfir+150ml leche', coposOp3: '30g copos'
-    },
-    almuerzo: { frutosSecos: '15g', fruta: '1 pieza', protExtra: '4 lonchas muslo pollo+queso havarti' },
-    comidaProt: { pollo: '180g', pescBlanco: '190g', pescAzul: '190g', carneRoja: '180g', legumbres: '200g+huevo' },
-    comidaHC: { patata: '320g', arroz: '80g', pasta: '80g', noquis: '160g' },
-    merienda: { kefir: '—', protMerienda: '1 scoop+agua', frutosSecos: '—' },
-    cenaProt: { pollo: '190g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '190g' },
-    cenaHC: { patata: '220g', arrozPasta: '60g', noquis: '130g' },
-    objetivo: '−1.3/1.5 kg/mes\nObj: llegar a ~93 kg en Abr',
-    palanca: '↓ Cereales desayuno 60→45g. ↓ HC comida: patata 400→320g, arroz 100→80g. ↓ HC cena: patata 300→220g, arroz 75→60g, ñoquis 160→130g. Copos op3 40→30g. Merienda: solo proteína.'
+    id:'feb26', mes:'Feb 2026', peso:96.3, fase:'DEF', isNew:false,
+    desayuno:{leche:'300ml SL',prot:'30g',cereales:'45g CF/avena',fs:'25g',panSal:'80g pan int.',queso:'20g',kef3:'150g kéfir+150ml leche',cop3:'30g copos'},
+    almuerzo:{fs:'15g',fruta:'1 pieza',extra:'4 lonchas muslo pollo+queso havarti'},
+    cP:{pollo:'180g',pescB:'190g',pescA:'190g',carne:'180g',legumb:'200g+1 huevo'},
+    cHC:{patata:'320g',arroz:'80g',pasta:'80g',noquis:'160g'},
+    mer:{kefir:'—',prot:'1 scoop agua',fs:'—'},
+    ceP:{pollo:'190g',pescB:'180g',pescA:'170g',carne:'190g'},
+    ceHC:{patata:'220g',arpas:'60g',noquis:'130g'},
+    obj:'−1.3/1.5 kg/mes → ~93 kg en Abr',
+    pal:'↓ Cereales 60→45g. ↓ HC comida: patata 400→320g, arroz 100→80g (−~130 kcal). ↓ HC cena: patata 300→220g, arroz 75→60g (−~100 kcal). Merienda: solo proteína. Total −~430 kcal/día vs oct.',
+    macroRef: {patata_c:320, arroz_c:80, pollo_c:180, kefir_m:0}
   },
   {
-    id: 'abr26', mes: 'Abr 2026 ★', peso: 93.6, pesoFin: null, fase: 'DEF',
-    colClass: 'col-new',
-    isNew: true,
-    desayuno: {
-      leche: '300ml SL', proteina: '30g', cereales: '45g CF/avena',
-      frutosSecos: '25g', panSalado: '80g pan int.', queso: '20g',
-      kefirOp3: '150g kéfir+150ml leche', coposOp3: '30g copos'
-    },
-    almuerzo: { frutosSecos: '15g', fruta: '1 pieza', protExtra: '4 lonchas muslo pollo+queso havarti' },
-    comidaProt: { pollo: '195g', pescBlanco: '205g', pescAzul: '190g', carneRoja: '190g', legumbres: '200g+huevo' },
-    comidaHC: { patata: '300g', arroz: '75g', pasta: '75g', noquis: '155g' },
-    merienda: { kefir: '—', protMerienda: '1 scoop+agua', frutosSecos: '—' },
-    cenaProt: { pollo: '190g', pescBlanco: '180g', pescAzul: '170g', carneRoja: '190g' },
-    cenaHC: { patata: '190g', arrozPasta: '55g', noquis: '120g' },
-    objetivo: '−1.2/1.3 kg/mes\nObj: llegar a ~91 kg en Jun',
-    palanca: '↑ Proteína comida: pollo 180→195g, pescado 190→205g (def. profunda). ↓ HC comida: patata 320→300g, arroz 80→75g (volver a valores Jun 2025). ↓ HC cena: patata 220→190g, arroz 60→55g, ñoquis 130→120g.'
+    id:'abr26', mes:'Abr 2026 ★', peso:93.6, fase:'DEF', isNew:true,
+    desayuno:{leche:'300ml SL',prot:'30g',cereales:'45g CF/avena',fs:'25g',panSal:'80g pan int.',queso:'20g',kef3:'150g kéfir+150ml leche',cop3:'30g copos'},
+    almuerzo:{fs:'15g',fruta:'1 pieza',extra:'4 lonchas muslo pollo+queso havarti'},
+    cP:{pollo:'195g',pescB:'205g',pescA:'190g',carne:'190g',legumb:'200g+1 huevo'},
+    cHC:{patata:'300g',arroz:'75g',pasta:'75g',noquis:'155g'},
+    mer:{kefir:'—',prot:'1 scoop agua',fs:'—'},
+    ceP:{pollo:'190g',pescB:'180g',pescA:'170g',carne:'190g'},
+    ceHC:{patata:'190g',arpas:'55g',noquis:'120g'},
+    obj:'−1.2/1.3 kg/mes → ~91 kg en Jun',
+    pal:'↑ Proteína comida: pollo 180→195g, pescado 190→205g (def. profunda >4 sem). ↓ HC comida: patata 320→300g, arroz 80→75g (retorno a valores Jun 2025). ↓ HC cena: patata 220→190g, arroz 60→55g, ñoquis 130→120g.',
+    macroRef: {patata_c:300, arroz_c:75, pollo_c:195, kefir_m:0}
   }
 ];
 
-// Dynamic columns added by user
 let dynamicCols = [];
+let ghConfig = JSON.parse(localStorage.getItem('gh_config') || '{}');
 
-// ─── ROWS DEFINITION ────────────────────────────────────
+// ══════════════════════════════════════════════════
+// MACRO CALCULATOR
+// ══════════════════════════════════════════════════
+function calcMacros(col) {
+  const F = FOODS;
+  const calc = (foodKey, grams) => {
+    if (!grams || grams <= 0) return {c:0,p:0,g:0,k:0};
+    const f = F[foodKey];
+    if (!f) return {c:0,p:0,g:0,k:0};
+    const m = grams/100;
+    return {c:+(f[1]*m).toFixed(1), p:+(f[2]*m).toFixed(1), g:+(f[3]*m).toFixed(1), k:+(f[4]*m).toFixed(0)};
+  };
+  const sum = (...items) => items.reduce((a,b)=>({c:a.c+b.c, p:a.p+b.p, g:a.g+b.g, k:a.k+b.k}), {c:0,p:0,g:0,k:0});
+  const parseG = (s) => { if (!s || s==='—') return 0; const m = String(s).match(/^(\d+)/); return m ? parseInt(m[1]) : 0; };
+
+  // Desayuno (opción 1 estándar)
+  const leche_ml = parseG(col.desayuno?.leche || col.d?.leche) || 300;
+  const prot_d = parseG(col.desayuno?.prot || col.d?.prot) || 30;
+  const cereal_g = parseG(col.desayuno?.cereales || col.d?.cereales) || 40;
+  const fs_d = parseG(col.desayuno?.fs || col.d?.fs) || 20;
+  const desayuno = sum(
+    calc('leche_semi', leche_ml),
+    calc('proteina_polvo', prot_d),
+    calc('corn_flakes', cereal_g),
+    calc('frutos_secos', fs_d)
+  );
+
+  // Almuerzo
+  const fs_a = parseG(col.almuerzo?.fs || col.a?.fs) || 15;
+  const almuerzo = sum(calc('frutos_secos', fs_a));
+
+  // Comida (referencia pollo + arroz)
+  const pollo_c = parseG(col.cP?.pollo || col.cp?.pollo) || 180;
+  const arroz_c = parseG(col.cHC?.arroz || col.ch?.arroz) || 80;
+  const patata_c = parseG(col.cHC?.patata || col.ch?.patata) || 300;
+  const comida = sum(
+    calc('pollo_pechuga', pollo_c),
+    calc('arroz_integral', arroz_c),
+    calc('patata', patata_c),
+    calc('aove', 10)
+  );
+
+  // Merienda
+  const kef_m = parseG(col.mer?.kefir || col.m?.kefir) || 0;
+  const prot_m = parseG(col.mer?.prot || col.m?.prot) || 25;
+  const fs_m = parseG(col.mer?.fs || col.m?.fs) || 0;
+  const merienda = sum(
+    calc('kefir', kef_m),
+    calc('proteina_polvo', prot_m),
+    calc('frutos_secos', fs_m)
+  );
+
+  // Cena
+  const pollo_n = parseG(col.ceP?.pollo || col.cep?.pollo) || 185;
+  const patata_n = parseG(col.ceHC?.patata || col.ceh?.patata) || 200;
+  const arpas_n = parseG(col.ceHC?.arpas || col.ceh?.arpas) || 0;
+  const cena = sum(
+    calc('pollo_pechuga', pollo_n),
+    calc('patata', patata_n),
+    calc('arroz_integral', arpas_n),
+    calc('aove', 10)
+  );
+
+  const total = sum(desayuno, almuerzo, comida, merienda, cena);
+  const round = o => ({c:Math.round(o.c), p:Math.round(o.p), g:Math.round(o.g), k:Math.round(o.k)});
+  return {
+    desayuno: round(desayuno),
+    almuerzo: round(almuerzo),
+    comida: round(comida),
+    merienda: round(merienda),
+    cena: round(cena),
+    total: round(total)
+  };
+}
+
+// ══════════════════════════════════════════════════
+// TDEE CALCULATOR
+// ══════════════════════════════════════════════════
+function calcTDEE(peso, edad) {
+  const bmr = 10*peso + 6.25*193 - 5*(edad||27) + 5;
+  return Math.round(bmr * 1.725);
+}
+
+// ══════════════════════════════════════════════════
+// RENDER TABLE
+// ══════════════════════════════════════════════════
+function phClass(f){ return f?.startsWith('DEF')?'def': f==='VOL'?'vol': f==='MAN'?'man':'def'; }
+function phLabel(f){ return f==='DEF'||f==='DEF_MED'?'Definición': f==='DEF_INICIO'?'Def. inicio': f==='DEF_PROF'?'Def. profunda': f==='VOL'?'Volumen':'Mantenimiento'; }
+function getV(o,path){ return path.split('.').reduce((x,k)=>x&&x[k]!==undefined?x[k]:'—',o); }
+function parsNum(s){ if(!s||s==='—') return null; const m=String(s).match(/(\d+)/); return m?parseInt(m[1]):null; }
+function upDown(cur,prev){ const c=parsNum(cur), p=parsNum(prev); if(!c||!p) return ''; return c>p?' up':c<p?' down':''; }
+
 const ROWS = [
-  { type:'section', label:'📋 DATOS GENERALES' },
-  { type:'data', label:'Peso inicio (kg)', key:'peso', format:'peso' },
-  { type:'data', label:'Fase', key:'fase', format:'fase' },
-
-  { type:'section', label:'🌅 DESAYUNO' },
-  { type:'data', label:'Leche semidesnatada', key:'desayuno.leche', indent:true },
-  { type:'data', label:'Proteína en polvo', key:'desayuno.proteina', indent:true },
-  { type:'data', label:'Cereales (corn flakes / avena)', key:'desayuno.cereales', indent:true },
-  { type:'data', label:'Frutos secos', key:'desayuno.frutosSecos', indent:true },
-  { type:'data', label:'— Opción salada: Pan', key:'desayuno.panSalado', indent:true },
-  { type:'data', label:'— Opción salada: Queso', key:'desayuno.queso', indent:true },
-  { type:'data', label:'— Opción 3: Kéfir', key:'desayuno.kefirOp3', indent:true },
-  { type:'data', label:'— Opción 3: Copos avena', key:'desayuno.coposOp3', indent:true },
-
-  { type:'section', label:'☀️ ALMUERZO (11:00–11:30)' },
-  { type:'data', label:'Frutos secos', key:'almuerzo.frutosSecos', indent:true },
-  { type:'data', label:'Fruta', key:'almuerzo.fruta', indent:true },
-  { type:'data', label:'Proteína extra (pollo+queso)', key:'almuerzo.protExtra', indent:true },
-
-  { type:'section', label:'🍽️ COMIDA — PROTEÍNA' },
-  { type:'data', label:'Pollo / Pavo', key:'comidaProt.pollo', indent:true },
-  { type:'data', label:'Pescado blanco', key:'comidaProt.pescBlanco', indent:true },
-  { type:'data', label:'Pescado azul (salmón, etc.)', key:'comidaProt.pescAzul', indent:true },
-  { type:'data', label:'Carne roja', key:'comidaProt.carneRoja', indent:true },
-  { type:'data', label:'Legumbres de bote', key:'comidaProt.legumbres', indent:true },
-
-  { type:'section', label:'🍽️ COMIDA — HIDRATOS DE CARBONO' },
-  { type:'data', label:'Patata / Boniato', key:'comidaHC.patata', indent:true },
-  { type:'data', label:'Arroz integral / Basmati', key:'comidaHC.arroz', indent:true },
-  { type:'data', label:'Pasta integral', key:'comidaHC.pasta', indent:true },
-  { type:'data', label:'Ñoquis', key:'comidaHC.noquis', indent:true },
-
-  { type:'section', label:'🌤️ MERIENDA' },
-  { type:'data', label:'Kéfir', key:'merienda.kefir', indent:true },
-  { type:'data', label:'Proteína en polvo', key:'merienda.protMerienda', indent:true },
-  { type:'data', label:'Frutos secos', key:'merienda.frutosSecos', indent:true },
-
-  { type:'section', label:'🌙 CENA — PROTEÍNA' },
-  { type:'data', label:'Pollo / Pavo', key:'cenaProt.pollo', indent:true },
-  { type:'data', label:'Pescado blanco', key:'cenaProt.pescBlanco', indent:true },
-  { type:'data', label:'Pescado azul', key:'cenaProt.pescAzul', indent:true },
-  { type:'data', label:'Carne roja / Cerdo ibérico', key:'cenaProt.carneRoja', indent:true },
-
-  { type:'section', label:'🌙 CENA — HIDRATOS DE CARBONO' },
-  { type:'data', label:'Patata / Boniato', key:'cenaHC.patata', indent:true },
-  { type:'data', label:'Arroz / Pasta integral', key:'cenaHC.arrozPasta', indent:true },
-  { type:'data', label:'Ñoquis', key:'cenaHC.noquis', indent:true },
-
-  { type:'section', label:'🎯 OBJETIVO Y PALANCAS' },
-  { type:'data', label:'Objetivo de peso mensual', key:'objetivo', format:'obj' },
-  { type:'data', label:'Palancas aplicadas', key:'palanca', format:'palanca' },
+  {t:'s', label:'📋 DATOS GENERALES'},
+  {t:'d', label:'Fase', k:'fase', fmt:'fase'},
+  {t:'s', label:'🌅 DESAYUNO'},
+  {t:'d', label:'Leche semid.', k:'desayuno.leche', i:1},
+  {t:'d', label:'Proteína polvo', k:'desayuno.prot', i:1},
+  {t:'d', label:'Cereales (CF/avena)', k:'desayuno.cereales', i:1},
+  {t:'d', label:'Frutos secos', k:'desayuno.fs', i:1},
+  {t:'d', label:'— Op. salada: Pan', k:'desayuno.panSal', i:1},
+  {t:'d', label:'— Op. salada: Queso', k:'desayuno.queso', i:1},
+  {t:'d', label:'— Op. 3: Kéfir', k:'desayuno.kef3', i:1},
+  {t:'d', label:'— Op. 3: Copos', k:'desayuno.cop3', i:1},
+  {t:'m', label:'🧮 MACROS DESAYUNO (op.1)', section:'desayuno'},
+  {t:'s', label:'☀️ ALMUERZO (11:00–11:30)'},
+  {t:'d', label:'Frutos secos', k:'almuerzo.fs', i:1},
+  {t:'d', label:'Fruta', k:'almuerzo.fruta', i:1},
+  {t:'d', label:'Proteína extra', k:'almuerzo.extra', i:1},
+  {t:'s', label:'🍽️ COMIDA — PROTEÍNA'},
+  {t:'d', label:'Pollo / Pavo', k:'cP.pollo', i:1},
+  {t:'d', label:'Pescado blanco', k:'cP.pescB', i:1},
+  {t:'d', label:'Pescado azul', k:'cP.pescA', i:1},
+  {t:'d', label:'Carne roja', k:'cP.carne', i:1},
+  {t:'d', label:'Legumbres', k:'cP.legumb', i:1},
+  {t:'s', label:'🍽️ COMIDA — HIDRATOS'},
+  {t:'d', label:'Patata / Boniato', k:'cHC.patata', i:1},
+  {t:'d', label:'Arroz integral', k:'cHC.arroz', i:1},
+  {t:'d', label:'Pasta integral', k:'cHC.pasta', i:1},
+  {t:'d', label:'Ñoquis', k:'cHC.noquis', i:1},
+  {t:'m', label:'🧮 MACROS COMIDA (ref: pollo+arroz+patata)', section:'comida'},
+  {t:'s', label:'🌤️ MERIENDA'},
+  {t:'d', label:'Kéfir', k:'mer.kefir', i:1},
+  {t:'d', label:'Proteína polvo', k:'mer.prot', i:1},
+  {t:'d', label:'Frutos secos', k:'mer.fs', i:1},
+  {t:'m', label:'🧮 MACROS MERIENDA', section:'merienda'},
+  {t:'s', label:'🌙 CENA — PROTEÍNA'},
+  {t:'d', label:'Pollo / Pavo', k:'ceP.pollo', i:1},
+  {t:'d', label:'Pescado blanco', k:'ceP.pescB', i:1},
+  {t:'d', label:'Pescado azul', k:'ceP.pescA', i:1},
+  {t:'d', label:'Carne roja', k:'ceP.carne', i:1},
+  {t:'s', label:'🌙 CENA — HIDRATOS'},
+  {t:'d', label:'Patata / Boniato', k:'ceHC.patata', i:1},
+  {t:'d', label:'Arroz / Pasta', k:'ceHC.arpas', i:1},
+  {t:'d', label:'Ñoquis', k:'ceHC.noquis', i:1},
+  {t:'m', label:'🧮 MACROS CENA (ref: pollo+patata)', section:'cena'},
+  {t:'s', label:'📊 MACROS TOTALES DIARIOS'},
+  {t:'mt', label:''},
+  {t:'s', label:'🎯 OBJETIVOS Y PALANCAS'},
+  {t:'d', label:'Objetivo mensual', k:'obj', fmt:'obj'},
+  {t:'d', label:'Palancas aplicadas', k:'pal', fmt:'pal'},
 ];
 
-// ─── HELPER ─────────────────────────────────────────────
-function getVal(obj, path) {
-  return path.split('.').reduce((o,k) => (o && o[k] !== undefined ? o[k] : '—'), obj);
-}
-
-function phaseClass(fase) {
-  if (!fase) return '';
-  if (fase.startsWith('DEF')) return 'def';
-  if (fase === 'VOL') return 'vol';
-  return 'man';
-}
-function phaseLabel(fase) {
-  if (!fase) return '';
-  if (fase === 'DEF' || fase === 'DEF_MED') return 'Definición';
-  if (fase === 'DEF_INICIO') return 'Def. inicio';
-  if (fase === 'DEF_PROF') return 'Def. profunda';
-  if (fase === 'VOL') return 'Volumen';
-  return 'Mantenimiento';
-}
-
-// ─── CALCULATE NEW MONTH ─────────────────────────────────
-function calcMonth(peso, fase, tend) {
-  // Base values by phase
-  const bases = {
-    DEF_INICIO: {
-      cereales:'60g CF/avena', leche:'300ml SL', proteina:'30g', frutosSecosD:'25g',
-      panSalado:'80g pan int.', queso:'20g', kefirOp3:'150g kéfir+150ml leche', coposOp3:'30g copos',
-      fsAlm:'15g', fruta:'1 pieza', protExtra:'4 lonchas pollo+queso',
-      pollo:'180g', pescBlanco:'190g', pescAzul:'190g', carneRoja:'180g', legumbres:'200g+huevo',
-      patataC:'350g', arrozC:'90g', pastaC:'90g', noquiC:'175g',
-      kefirM:'—', protM:'1 scoop+agua', fsM:'—',
-      polloN:'190g', pescBN:'180g', pescAN:'170g', carneN:'190g',
-      patataN:'250g', arrozN:'70g', noquiN:'140g',
-      obj:'−1.5/1.8 kg/mes', palanca:'Entrada definición desde peso alto. HC comida y cena reducidos respecto a volumen. Merienda simplificada a proteína sola.'
-    },
-    DEF_MED: {
-      cereales:'45g CF/avena', leche:'300ml SL', proteina:'30g', frutosSecosD:'25g',
-      panSalado:'80g pan int.', queso:'20g', kefirOp3:'150g kéfir+150ml leche', coposOp3:'30g copos',
-      fsAlm:'15g', fruta:'1 pieza', protExtra:'4 lonchas pollo+queso',
-      pollo:'190g', pescBlanco:'200g', pescAzul:'190g', carneRoja:'185g', legumbres:'200g+huevo',
-      patataC:'300g', arrozC:'75g', pastaC:'75g', noquiC:'155g',
-      kefirM:'—', protM:'1 scoop+agua', fsM:'—',
-      polloN:'190g', pescBN:'180g', pescAN:'170g', carneN:'190g',
-      patataN:'200g', arrozN:'60g', noquiN:'130g',
-      obj:'−1.2/1.3 kg/mes', palanca:'Definición media. HC comida a valores Jun 2025. HC cena reducidos. Proteína comida alta para preservar músculo.'
-    },
-    DEF_PROF: {
-      cereales:'40g CF/avena', leche:'300ml SL', proteina:'30g', frutosSecosD:'20g',
-      panSalado:'1 reb.', queso:'20g', kefirOp3:'—', coposOp3:'—',
-      fsAlm:'15g', fruta:'1 pieza', protExtra:'—',
-      pollo:'200g', pescBlanco:'210g', pescAzul:'190g', carneRoja:'200g', legumbres:'200g+huevo',
-      patataC:'280g', arrozC:'70g', pastaC:'70g', noquiC:'145g',
-      kefirM:'—', protM:'1 scoop+agua', fsM:'—',
-      polloN:'180g', pescBN:'180g', pescAN:'170g', carneN:'180g',
-      patataN:'180g', arrozN:'55g', noquiN:'115g',
-      obj:'−0.8/1.0 kg/mes', palanca:'Definición profunda. Proteína comida máxima (+20% vs inicio). HC mínimos. Cena HC muy reducidos. Patrón Jun 2025.'
-    },
-    VOL: {
-      cereales:'60g CF/avena', leche:'300ml SL', proteina:'30g', frutosSecosD:'25g',
-      panSalado:'2 reb.', queso:'20g', kefirOp3:'200g kéfir', coposOp3:'40g copos',
-      fsAlm:'15g', fruta:'1 pieza', protExtra:'4 lonchas muslo pollo+queso havarti',
-      pollo:'180g', pescBlanco:'190g', pescAzul:'190g', carneRoja:'180g', legumbres:'200g+huevo',
-      patataC:'400g', arrozC:'100g', pastaC:'100g', noquiC:'190g',
-      kefirM:'200g', protM:'15g', fsM:'15g',
-      polloN:'190g', pescBN:'180g', pescAN:'170g', carneN:'200g',
-      patataN:'300g', arrozN:'75g', noquiN:'160g',
-      obj:'+1.0/1.5 kg/mes', palanca:'Volumen. HC máximos en todas las tomas. Merienda completa con kéfir. Cereales desayuno 60g. Almuerzo reforzado.'
-    },
-    MAN: {
-      cereales:'50g CF/avena', leche:'300ml SL', proteina:'30g', frutosSecosD:'20g',
-      panSalado:'80g pan int.', queso:'20g', kefirOp3:'150g kéfir', coposOp3:'35g copos',
-      fsAlm:'15g', fruta:'1 pieza', protExtra:'—',
-      pollo:'185g', pescBlanco:'195g', pescAzul:'185g', carneRoja:'185g', legumbres:'200g+huevo',
-      patataC:'340g', arrozC:'85g', pastaC:'85g', noquiC:'170g',
-      kefirM:'150g', protM:'15g', fsM:'15g',
-      polloN:'185g', pescBN:'180g', pescAN:'170g', carneN:'185g',
-      patataN:'240g', arrozN:'65g', noquiN:'140g',
-      obj:'±0 kg/mes', palanca:'Mantenimiento. HC intermedios entre def y vol. Proteína alta. Merienda moderada.'
-    }
-  };
-
-  let b = bases[fase] || bases['DEF_MED'];
-
-  // Adjust slightly for tend
-  let patAdj = 0, arrozAdj = 0;
-  if (tend === 'lento') { patAdj = -20; arrozAdj = -5; }
-  if (tend === 'rapido') { patAdj = +20; arrozAdj = +5; }
-  if (tend === 'parado' && fase.startsWith('DEF')) { patAdj = -30; arrozAdj = -8; }
-  if (tend === 'parado' && fase === 'VOL') { patAdj = +30; arrozAdj = +8; }
-
-  const adj = (val, d) => {
-    const m = val.match(/^(\d+)/);
-    if (!m) return val;
-    return (parseInt(m[1]) + d) + val.slice(m[1].length);
-  };
-
-  let obj = b.obj;
-  if (tend === 'lento') obj += '\n⚠️ HC reducidos -10%';
-  if (tend === 'parado') obj += '\n🛑 HC reducidos −15%, revisar cardio';
-  if (tend === 'rapido') obj += '\n⚡ HC aumentados ligeramente';
-
-  return {
-    mes: document.getElementById('inp-mes').value || '—',
-    peso: peso,
-    fase: fase,
-    colClass: 'col-new',
-    isNew: true,
-    desayuno: {
-      leche: b.leche, proteina: b.proteina, cereales: b.cereales,
-      frutosSecos: b.frutosSecosD, panSalado: b.panSalado, queso: b.queso,
-      kefirOp3: b.kefirOp3, coposOp3: b.coposOp3
-    },
-    almuerzo: { frutosSecos: b.fsAlm, fruta: b.fruta, protExtra: b.protExtra },
-    comidaProt: { pollo: b.pollo, pescBlanco: b.pescBlanco, pescAzul: b.pescAzul, carneRoja: b.carneRoja, legumbres: b.legumbres },
-    comidaHC: { patata: adj(b.patataC, patAdj), arroz: adj(b.arrozC, arrozAdj), pasta: adj(b.pastaC, arrozAdj), noquis: adj(b.noquiC, Math.round(patAdj*0.4)) },
-    merienda: { kefir: b.kefirM, protMerienda: b.protM, frutosSecos: b.fsM },
-    cenaProt: { pollo: b.polloN, pescBlanco: b.pescBN, pescAzul: b.pescAN, carneRoja: b.carneN },
-    cenaHC: { patata: adj(b.patataN, Math.round(patAdj*0.6)), arrozPasta: adj(b.arrozN, Math.round(arrozAdj*0.6)), noquis: adj(b.noquiN, Math.round(patAdj*0.3)) },
-    objetivo: obj,
-    palanca: b.palanca + (tend !== 'ok' ? ` Ajuste tendencia: ${tend}.` : '')
-  };
-}
-
-// ─── ADD MONTH ───────────────────────────────────────────
-function addMonth() {
-  const mes = document.getElementById('inp-mes').value.trim();
-  const peso = parseFloat(document.getElementById('inp-peso').value);
-  const fase = document.getElementById('inp-fase').value;
-  const tend = document.getElementById('inp-tend').value;
-  if (!mes || isNaN(peso)) { alert('Introduce el mes y el peso.'); return; }
-  const col = calcMonth(peso, fase, tend);
-  col.mes = mes + ' ★';
-  dynamicCols.push(col);
-  renderTable();
-}
-
-function clearDynamic() { dynamicCols = []; renderTable(); }
-
-// ─── RENDER ──────────────────────────────────────────────
-function renderTable() {
-  const allCols = [...HISTORICAL, ...dynamicCols];
-  const table = document.getElementById('main-table');
-  let html = '';
-
-  // THEAD
-  html += '<thead><tr>';
-  html += `<th class="label-col" style="font-size:10px;color:var(--text3);text-align:left">ALIMENTO / TOMA</th>`;
-  allCols.forEach(col => {
-    const pc = phaseClass(col.fase);
-    html += `<th class="${col.colClass}">
+function renderTable(){
+  const all = [...HISTORICAL, ...dynamicCols];
+  const macros = all.map(c => calcMacros(c));
+  let h = '<thead><tr>';
+  h += `<th class="sticky" style="font-size:9px;color:var(--t4)">ALIMENTO / TOMA</th>`;
+  all.forEach((c,i) => {
+    const pc = phClass(c.fase);
+    h += `<th class="t-${c.isNew?'new':pc}">
       <div class="th-inner">
-        <span class="th-month">${col.mes}</span>
-        <span class="th-phase ${pc}">${phaseLabel(col.fase)}</span>
-        <span class="th-peso">${col.peso} kg</span>
-        ${col.isNew ? '<span style="font-size:9px;color:var(--new)">calculado</span>' : ''}
+        <span class="th-mon">${c.mes}</span>
+        <span class="badge b-${c.isNew?'new':pc}" style="font-size:9px">${phLabel(c.fase)}</span>
+        <span class="th-pes">${c.peso} kg</span>
       </div>
     </th>`;
   });
-  html += '</tr></thead>';
+  h += '</tr></thead><tbody>';
 
-  // TBODY
-  html += '<tbody>';
   ROWS.forEach(row => {
-    if (row.type === 'section') {
-      html += `<tr class="section-row">
-        <td class="label-col" colspan="${allCols.length + 1}">${row.label}</td>
-      </tr>`;
+    if(row.t==='s'){
+      h += `<tr class="sec-row"><td class="sticky" colspan="${all.length+1}">${row.label}</td></tr>`;
       return;
     }
-    const isIndent = row.indent;
-    const fmt = row.format;
-    html += '<tr>';
-    html += `<td class="label-col${isIndent ? ' indent' : ''}">${row.label}</td>`;
-    allCols.forEach((col, ci) => {
-      const val = getVal(col, row.key);
-      const colCls = col.isNew ? ' col-new' : '';
-      if (row.key === 'fase') {
-        const pc = phaseClass(col.fase);
-        html += `<td class="${colCls}"><span class="badge badge-${pc}">${phaseLabel(col.fase)}</span></td>`;
+    // Macro row
+    if(row.t==='m'){
+      h += '<tr>';
+      h += `<td class="sticky" style="font-size:10px;color:var(--t3);padding-left:24px">HC · PRO · GRA · kcal</td>`;
+      all.forEach((c,i)=>{
+        const m = macros[i][row.section];
+        const nc = c.isNew?' t-new':'';
+        h += `<td class="${nc}" style="padding:4px 6px">
+          <div style="display:flex;flex-direction:column;gap:2px;font-size:10px;font-family:'DM Mono',monospace">
+            <span><span style="color:var(--c-carb)">${m.c}g HC</span> · <span style="color:var(--c-prot)">${m.p}g PRO</span></span>
+            <span><span style="color:var(--c-fat)">${m.g}g GRA</span> · <span style="color:var(--c-kcal)">${m.k} kcal</span></span>
+          </div>
+        </td>`;
+      });
+      h += '</tr>';
+      return;
+    }
+    // Macro total row
+    if(row.t==='mt'){
+      // HC | PRO | GRA | KCAL rows
+      const mkeys = [
+        {label:'Total HC/día', key:'c', cls:'macro-c', unit:'g'},
+        {label:'Total Proteína/día', key:'p', cls:'macro-p', unit:'g'},
+        {label:'Total Grasas/día', key:'g', cls:'macro-g', unit:'g'},
+        {label:'Total Calorías/día', key:'k', cls:'macro-k', unit:'kcal'},
+      ];
+      mkeys.forEach(mk=>{
+        h += '<tr>';
+        h += `<td class="sticky" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--t3)">${mk.label}</td>`;
+        all.forEach((c,i)=>{
+          const val = macros[i].total[mk.key];
+          const nc = c.isNew?' t-new':'';
+          h += `<td class="${mk.cls} macro-total${nc}">${val} ${mk.unit}</td>`;
+        });
+        h += '</tr>';
+      });
+      return;
+    }
+    // Normal data row
+    h += '<tr>';
+    h += `<td class="sticky${row.i?' ind':''}">  ${row.label}</td>`;
+    all.forEach((c,i)=>{
+      const val = getV(c, row.k);
+      const nc = c.isNew?' t-new':'';
+      if(row.fmt==='fase'){
+        const pc = phClass(c.fase);
+        h += `<td class="${nc}"><span class="badge b-${c.isNew?'new':pc}">${phLabel(c.fase)}</span></td>`;
         return;
       }
-      if (row.key === 'peso') {
-        html += `<td class="val-peso${colCls}">${val}</td>`;
+      if(row.fmt==='obj'){
+        h += `<td class="${nc}" style="font-family:'Syne',sans-serif;font-size:10px;color:var(--t2);text-align:left;padding:7px 10px;white-space:pre-line;line-height:1.45">${val}</td>`;
         return;
       }
-      if (fmt === 'obj') {
-        html += `<td class="objective${colCls}" style="color:var(--text2);font-size:11px;text-align:left;padding:8px 10px;white-space:pre-line;line-height:1.5">${val}</td>`;
+      if(row.fmt==='pal'){
+        h += `<td class="${nc}" style="font-family:'Syne',sans-serif;font-size:10px;color:var(--t3);text-align:left;padding:7px 10px;line-height:1.5;min-width:200px;white-space:normal">${val}</td>`;
         return;
       }
-      if (fmt === 'palanca') {
-        html += `<td class="${colCls}" style="font-family:'Syne',sans-serif;font-size:10px;color:var(--text2);text-align:left;padding:7px 10px;line-height:1.55;white-space:normal;min-width:200px">${val}</td>`;
-        return;
-      }
-      if (val === '—' || val === undefined) {
-        html += `<td class="na${colCls}">—</td>`;
-        return;
-      }
-      // Detect up/down vs prev col
-      let updown = '';
-      if (ci > 0 && !row.key.startsWith('almuerzo') && !row.key.includes('fruta')) {
-        const prev = getVal(allCols[ci-1], row.key);
-        const nm = String(val).match(/^(\d+)/);
-        const pm = String(prev).match(/^(\d+)/);
-        if (nm && pm) {
-          const nv = parseInt(nm[1]), pv = parseInt(pm[1]);
-          if (nv > pv) updown = ' up';
-          else if (nv < pv) updown = ' down';
-        }
-      }
-      html += `<td class="val${updown}${colCls}">${val}</td>`;
+      if(!val||val==='—'){ h += `<td class="na${nc}">—</td>`; return; }
+      const ud = i>0 ? upDown(val, getV(all[i-1], row.k)) : '';
+      h += `<td class="val${ud}${nc}">${val}</td>`;
     });
-    html += '</tr>';
+    h += '</tr>';
   });
-  html += '</tbody>';
-  table.innerHTML = html;
+  h += '</tbody>';
+  document.getElementById('main-table').innerHTML = h;
+  renderMacroPanel();
 }
 
+// ══════════════════════════════════════════════════
+// MACRO PANEL
+// ══════════════════════════════════════════════════
+function macroCard(label, m) {
+  return `<div class="card">
+    <div class="card-title">${label}</div>
+    <div class="macro-bar" style="margin-bottom:8px">
+      <div class="mpill mp-c">HC: <strong>${m.c}g</strong></div>
+      <div class="mpill mp-p">PRO: <strong>${m.p}g</strong></div>
+      <div class="mpill mp-g">GRA: <strong>${m.g}g</strong></div>
+      <div class="mpill mp-k">kcal: <strong>${m.k}</strong></div>
+    </div>
+    <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+      <div style="height:100%;background:linear-gradient(90deg,var(--c-carb) ${m.c/(m.c+m.p+m.g)*100||0}%,var(--c-prot) ${m.c/(m.c+m.p+m.g)*100||0}% ${(m.c+m.p)/(m.c+m.p+m.g)*100||0}%,var(--c-fat) ${(m.c+m.p)/(m.c+m.p+m.g)*100||0}%)"></div>
+    </div>
+  </div>`;
+}
+
+function renderMacroPanel(){
+  const all = [...HISTORICAL, ...dynamicCols];
+  let h = '';
+  all.forEach(col => {
+    const m = calcMacros(col);
+    const pc = phClass(col.fase);
+    const tdee = calcTDEE(col.peso, 27);
+    const diff = m.total.k - tdee;
+    const diffStr = diff >= 0 ? `+${diff} kcal vs TDEE` : `${diff} kcal vs TDEE`;
+    const diffCol = diff > 0 ? 'var(--vol)' : 'var(--def)';
+    h += `<div style="margin-bottom:24px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:800">${col.mes}</span>
+        <span class="badge b-${col.isNew?'new':pc}">${phLabel(col.fase)}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--t3)">${col.peso} kg</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:${diffCol}">${diffStr}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t4)">TDEE estimado: ~${tdee} kcal</span>
+      </div>
+      <div class="grid4" style="margin-bottom:6px">
+        ${macroCard('🌅 Desayuno', m.desayuno)}
+        ${macroCard('☀️ Almuerzo', m.almuerzo)}
+        ${macroCard('🍽️ Comida', m.comida)}
+        ${macroCard('🌤️ Merienda', m.merienda)}
+      </div>
+      <div class="grid2" style="margin-bottom:6px">
+        ${macroCard('🌙 Cena', m.cena)}
+        <div class="card" style="border-color:var(--border2);background:rgba(255,255,255,.03)">
+          <div class="card-title">📊 TOTAL DIARIO</div>
+          <div class="macro-bar">
+            <div class="mpill mp-c">HC: <strong>${m.total.c}g</strong></div>
+            <div class="mpill mp-p">PRO: <strong>${m.total.p}g</strong></div>
+            <div class="mpill mp-g">GRA: <strong>${m.total.g}g</strong></div>
+            <div class="mpill mp-k">kcal: <strong>${m.total.k}</strong></div>
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:var(--t3);font-family:'DM Mono',monospace;line-height:1.6">
+            PRO/kg peso: ${(m.total.p/col.peso).toFixed(2)} g/kg<br>
+            PRO/kg magro (~75%): ${(m.total.p/(col.peso*0.75)).toFixed(2)} g/kg<br>
+            %HC: ${Math.round(m.total.c*4/m.total.k*100)||0}% · %PRO: ${Math.round(m.total.p*4/m.total.k*100)||0}% · %GRA: ${Math.round(m.total.g*9/m.total.k*100)||0}%
+          </div>
+        </div>
+      </div>
+    </div><hr style="border-color:var(--border);margin-bottom:24px">`;
+  });
+  document.getElementById('macro-panel-content').innerHTML = h;
+}
+
+// ══════════════════════════════════════════════════
+// FOOD DB TABLE
+// ══════════════════════════════════════════════════
+function renderFoodDB(){
+  let h = '<thead><tr>';
+  ['Alimento','HC (g)','Proteína (g)','Grasas (g)','kcal','Notas'].forEach(k=>{
+    h += `<th style="text-align:left;padding:8px 12px">${k}</th>`;
+  });
+  h += '</tr></thead><tbody>';
+  Object.entries(FOODS).forEach(([id,f])=>{
+    h += `<tr>
+      <td style="text-align:left;padding:6px 12px;font-family:'DM Mono',monospace;font-size:11px">${f[0]}</td>
+      <td style="color:var(--c-carb)">${f[1]}</td>
+      <td style="color:var(--c-prot)">${f[2]}</td>
+      <td style="color:var(--c-fat)">${f[3]}</td>
+      <td style="color:var(--c-kcal)">${f[4]}</td>
+      <td style="font-size:10px;color:var(--t3)">${f[5]||'—'}</td>
+    </tr>`;
+  });
+  h += '</tbody>';
+  const t = document.getElementById('food-db-table');
+  if(t) t.innerHTML = h;
+}
+
+// ══════════════════════════════════════════════════
+// PALANCAS
+// ══════════════════════════════════════════════════
+const PALANCAS = [
+  {icon:'🍚', title:'↑ Subir Hidratos (comida + cena)', cls:'vol', when:'Inicio de Volumen o estancamiento muscular',
+   body:'Los HC son el combustible primario del músculo y el principal driver de calorías. Al subir patata (+100g), arroz (+25g) y HC en cena (+100g) se generan ~350-400 kcal/día adicionales que habilitan la síntesis proteica. En tu historial: el cambio DEF→VOL implica subir HC en todas las tomas simultáneamente. <strong>Objetivo: +1–1.5 kg/mes de peso total.</strong>'},
+  {icon:'📉', title:'↓ Bajar Hidratos (comida + cena)', cls:'def', when:'Inicio o profundización de Definición',
+   body:'La palanca principal de tu nutricionista. Cada −100g de patata = −77 kcal; cada −25g de arroz = −89 kcal. La secuencia lógica: primero comida (−50–100g patata), luego cena (−50–80g patata), y en definición profunda ambas. Los cereales desayuno bajan de 60→45g al entrar en def (−~55 kcal). <strong>Objetivo: −1–1.5 kg/mes preservando músculo.</strong>'},
+  {icon:'🥩', title:'↑ Subir Proteína en comida', cls:'def', when:'Definición prolongada (>8 semanas)',
+   body:'En definición avanzada (Jun 2025, Abr 2026), la proteína de comida sube aunque los HC bajen: pollo 170→200g, pescado 180→210g (+~40 kcal pero +8g proteína). Esto sirve para: (1) preservar músculo —en déficit el cuerpo puede catabolizar músculo como energía—; (2) efecto térmico: la proteína gasta el 25–30% de sus calorías en digerirse vs 8% de HC; (3) mayor saciedad. <strong>No se aplica en volumen porque la proteína ya es suficiente con menos gramos.</strong>'},
+  {icon:'🥣', title:'↑↓ Cereales desayuno', cls:'vol', when:'Cambio de fase o ajuste fino de energía matinal',
+   body:'Los cereales actúan como "señal de fase". DEF: 40-45g. VOL: 60g. El +15-20g aporta ~70 kcal pero tiene efecto mayor: sube glucógeno matinal antes del entreno en ayunas y psicológicamente marca la transición. <strong>Cambiar solo cereales sin tocar comidas principales genera un ajuste de ~+490 kcal/semana.</strong>'},
+  {icon:'🌿', title:'↓ Reducir Grasas (frutos secos / AOVE)', cls:'man', when:'Definición estancada tras agotar ajustes de HC',
+   body:'Última palanca porque las grasas regulan testosterona, cortisol, absorción vitaminas A/D/E/K y recuperación. Tu nutricionista mantiene frutos secos en 15–20g incluso en def profunda. Solo si llevas 4+ semanas sin bajar y HC ya están al mínimo: reducir frutos secos 20→10g ahorra ~55 kcal/día. <strong>Nunca reducir AOVE de cocción por debajo de 1 cucharada sopera/comida — riesgo inflamatorio y hormonal.</strong>'},
+  {icon:'🥛', title:'Simplificar Merienda', cls:'def', when:'Reducción agresiva de calorías en definición',
+   body:'La palanca de mayor impacto calórico sin tocar macrocomidas. Evolución histórica: kéfir 200g + proteína + frutos secos (~350 kcal) → kéfir 170g + proteína (~260 kcal) → solo proteína con agua (~120 kcal). El paso de merienda completa a solo proteína ahorra ~230 kcal/día = −1.6 kg de grasa/mes teórico. <strong>Se aplica cuando el déficit de HC no es suficiente o se necesita acelerar el proceso.</strong>'},
+];
+
+function renderPalancas(){
+  document.getElementById('palancas-grid').innerHTML = PALANCAS.map(p => `
+    <div class="p-card">
+      <div class="p-icon">${p.icon}</div>
+      <div class="p-title" style="color:var(--${p.cls==='def'?'def':p.cls==='vol'?'vol':'man'})">${p.title}</div>
+      <div class="p-when">${p.when}</div>
+      <div class="p-body">${p.body}</div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════════
+// GITHUB STEPS
+// ══════════════════════════════════════════════════
+function renderGHSteps(){
+  const steps = [
+    {n:1, title:'Crear repositorio privado en GitHub', body:'Ve a github.com → New repository → ponle nombre "mi-nutricion" (o el que prefieras) → selecciona <strong>Private</strong> → Create. El repo privado es importante para que tus datos no sean públicos.'},
+    {n:2, title:'Generar Personal Access Token', body:'GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token. Marca el permiso <span class="tag-chip">repo</span>. Copia el token (solo se muestra una vez).'},
+    {n:3, title:'Configurar la herramienta', body:'Rellena los campos de arriba con tu usuario, nombre del repo y token. Pulsa "Probar conexión" — si aparece ✅ estás listo.'},
+    {n:4, title:'Usar la herramienta con autoguardado', body:'Cuando añadas un mes nuevo en la pestaña "Tabla histórica", aparecerá un botón "💾 Guardar en GitHub". Al pulsarlo, la herramienta hará un commit con el JSON del mes en <span class="tag-chip">/dietas/{mes}.json</span>.'},
+    {n:5, title:'Cargar datos desde GitHub (en cualquier dispositivo)', body:'Al abrir la herramienta, si GitHub está configurado, pulsa "📥 Cargar desde GitHub" para recuperar todos los meses guardados. También puedes alojar el propio HTML en GitHub Pages y acceder desde cualquier dispositivo.'},
+    {n:6, title:'Alojar en GitHub Pages (opcional)', body:'Dentro del repo, ve a Settings → Pages → Source: Deploy from branch → main. Tu herramienta estará en <span class="tag-chip">https://{usuario}.github.io/mi-nutricion/</span> y funcionará desde el móvil, PC o tablet sin instalar nada.'},
+  ];
+  document.getElementById('gh-steps').innerHTML = steps.map(s=>`
+    <div class="gh-step">
+      <div class="gh-num">${s.n}</div>
+      <div class="gh-step-body"><h4>${s.title}</h4><p>${s.body}</p></div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════════
+// ADD MONTH (calculator)
+// ══════════════════════════════════════════════════
+function addMonth(){
+  const mes = document.getElementById('i-mes').value.trim();
+  const peso = parseFloat(document.getElementById('i-peso').value);
+  const fase = document.getElementById('i-fase').value;
+  const tend = document.getElementById('i-tend').value;
+  const edad = parseInt(document.getElementById('i-edad').value) || 27;
+  if(!mes || isNaN(peso)){ alert('Introduce el mes y el peso.'); return; }
+
+  const tdee = calcTDEE(peso, edad);
+  let targetKcal = fase==='VOL' ? tdee+300 : fase==='MAN' ? tdee : tdee-500;
+  if(tend==='lento' && fase.startsWith('DEF')) targetKcal -= 100;
+  if(tend==='parado' && fase.startsWith('DEF')) targetKcal -= 200;
+  if(tend==='rapido' && fase==='VOL') targetKcal += 100;
+
+  // Target macros
+  const pesoMagro = peso * 0.75;
+  const protMultiplier = fase==='VOL' ? 2.0 : fase.startsWith('DEF') ? 2.4 : 2.2;
+  const protTotal = Math.round(pesoMagro * protMultiplier);
+  const graTotal = Math.round(peso * 0.9);
+  const hcTotal = Math.round((targetKcal - protTotal*4 - graTotal*9) / 4);
+
+  // Distribute HC
+  const hcDesayuno = Math.round(hcTotal * 0.18);
+  const hcComida = Math.round(hcTotal * 0.45);
+  const hcCena = Math.round(hcTotal * 0.28);
+
+  // HC comida → food amounts
+  const arrozG = fase==='VOL' ? 100 : fase==='DEF_PROF' ? 65 : 75;
+  const hcDeArroz = arrozG * 0.75;
+  const hcRestComida = hcComida - hcDeArroz - 15;
+  const patataG = Math.max(150, Math.round(hcRestComida / 0.17));
+
+  const arrozNocheG = fase==='VOL' ? 75 : fase==='DEF_PROF' ? 50 : 55;
+  const hcRestCena = hcCena - arrozNocheG*0.75;
+  const patataN = Math.max(120, Math.round(hcRestCena / 0.17));
+
+  const cerealG = hcDesayuno > 50 ? 60 : hcDesayuno > 35 ? 45 : 40;
+
+  // Protein per meal
+  const protComida = Math.round(protTotal * 0.38);
+  const polloG = Math.round(protComida / 0.23);
+
+  const protCena = Math.round(protTotal * 0.32);
+  const polloCenaG = Math.round(protCena / 0.23);
+
+  const col = {
+    id: 'dyn_' + Date.now(), mes: mes + ' ★', peso, fase, isNew: true,
+    desayuno:{leche:'300ml SL', prot:'30g', cereales:`${cerealG}g CF/avena`, fs:'25g', panSal:'80g pan int.', queso:'20g', kef3:'150g kéfir+150ml leche', cop3:'30g copos'},
+    almuerzo:{fs:'15g', fruta:'1 pieza', extra: fase==='VOL'?'4 lonchas pollo+queso havarti':'4 lonchas pollo+queso havarti'},
+    cP:{pollo:`${polloG}g`, pescB:`${Math.round(polloG*1.05)}g`, pescA:`${Math.round(polloG*0.97)}g`, carne:`${Math.round(polloG*0.95)}g`, legumb:'200g+1 huevo'},
+    cHC:{patata:`${patataG}g`, arroz:`${arrozG}g`, pasta:`${arrozG}g`, noquis:`${Math.round(arrozG*1.6)}g`},
+    mer:{kefir: fase==='VOL'?'170g':'—', prot: fase==='VOL'?'15g':'1 scoop agua', fs: fase==='VOL'?'15g':'—'},
+    ceP:{pollo:`${polloCenaG}g`, pescB:`${Math.round(polloCenaG)}g`, pescA:`${Math.round(polloCenaG*0.9)}g`, carne:`${Math.round(polloCenaG)}g`},
+    ceHC:{patata:`${patataN}g`, arpas:`${arrozNocheG}g`, noquis:`${Math.round(arrozNocheG*2.1)}g`},
+    obj: `${fase==='VOL'?'+1.0/1.5':fase==='MAN'?'±0':'−1.0/1.3'} kg/mes\nTDEE: ~${tdee} kcal\nObj: ${targetKcal} kcal/día`,
+    pal: `Calculado desde TDEE (Mifflin×1.725). Objetivo: ${targetKcal} kcal. PRO: ${protTotal}g (${protMultiplier}g/kg magro). HC: ${hcTotal}g. GRA: ${graTotal}g. Tendencia: ${tend}.`
+  };
+
+  dynamicCols.push(col);
+  renderTable();
+
+  const resultEl = document.getElementById('calc-result');
+  const macros = calcMacros(col);
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = `<div class="note-box info">
+    <strong>✅ ${mes} añadido.</strong> TDEE: <strong>~${tdee} kcal</strong> · Objetivo: <strong>${targetKcal} kcal</strong> · PRO: <strong>${protTotal}g</strong> · HC: <strong>${hcTotal}g</strong> · GRA: <strong>${graTotal}g</strong>
+    &nbsp;<button class="btn-sm btn-ghost" style="margin-left:8px" onclick="saveToGitHub('${col.id}')">💾 Guardar en GitHub</button>
+  </div>`;
+  showStatus('✅ Mes añadido correctamente');
+}
+
+function clearDynamic(){ dynamicCols=[]; document.getElementById('calc-result').style.display='none'; renderTable(); }
+
+// ══════════════════════════════════════════════════
+// GITHUB
+// ══════════════════════════════════════════════════
+function saveGH(){
+  ghConfig = {
+    user: document.getElementById('gh-user').value.trim(),
+    repo: document.getElementById('gh-repo').value.trim(),
+    token: document.getElementById('gh-token').value.trim()
+  };
+  localStorage.setItem('gh_config', JSON.stringify(ghConfig));
+  document.getElementById('gh-status').textContent = `✅ Config guardada: ${ghConfig.user}/${ghConfig.repo}`;
+}
+
+async function testGH(){
+  if(!ghConfig.token){ alert('Introduce el token primero y pulsa Guardar config.'); return; }
+  document.getElementById('gh-status').textContent = '⏳ Probando conexión...';
+  try {
+    const r = await fetch(`https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}`, {
+      headers:{'Authorization':`Bearer ${ghConfig.token}`,'Accept':'application/vnd.github+json'}
+    });
+    if(r.ok){
+      document.getElementById('gh-status').textContent = `✅ Conexión OK — repo ${ghConfig.user}/${ghConfig.repo} accesible`;
+    } else {
+      document.getElementById('gh-status').textContent = `❌ Error ${r.status}: ${r.statusText}. Comprueba usuario, repo y token.`;
+    }
+  } catch(e){
+    document.getElementById('gh-status').textContent = `❌ Error de red: ${e.message}`;
+  }
+}
+
+async function saveToGitHub(colId){
+  if(!ghConfig.token){ alert('Configura GitHub primero en la pestaña 🐙 GitHub.'); return; }
+  const col = [...HISTORICAL, ...dynamicCols].find(c => c.id === colId);
+  if(!col){ alert('Columna no encontrada.'); return; }
+  const filename = col.mes.replace(/[^a-zA-Z0-9_\-]/g,'_').toLowerCase() + '.json';
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(col, null, 2))));
+  try {
+    // Check if file exists
+    let sha = '';
+    const check = await fetch(`https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/dietas/${filename}`,{
+      headers:{'Authorization':`Bearer ${ghConfig.token}`,'Accept':'application/vnd.github+json'}
+    });
+    if(check.ok){ const d = await check.json(); sha = d.sha; }
+    // Create/update file
+    const body = {message:`Añadir dieta ${col.mes}`, content, ...(sha?{sha}:{})};
+    const r = await fetch(`https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/dietas/${filename}`,{
+      method:'PUT',
+      headers:{'Authorization':`Bearer ${ghConfig.token}`,'Content-Type':'application/json','Accept':'application/vnd.github+json'},
+      body: JSON.stringify(body)
+    });
+    if(r.ok){ showStatus(`✅ Guardado en GitHub: dietas/${filename}`); }
+    else { const e = await r.json(); showStatus(`❌ Error: ${e.message}`, true); }
+  } catch(e){ showStatus(`❌ Error de red: ${e.message}`, true); }
+}
+
+// ══════════════════════════════════════════════════
+// EXPORT / IMPORT JSON
+// ══════════════════════════════════════════════════
+function exportJSON(){
+  const data = {historico: HISTORICAL, dinamico: dynamicCols, version:'2.0', exportado: new Date().toISOString()};
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nutricion_alejandro.json'; a.click();
+  showStatus('✅ JSON exportado');
+}
+
+function importJSON(evt){
+  const file = evt.target.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(data.dinamico) dynamicCols = [...dynamicCols, ...data.dinamico];
+      renderTable();
+      showStatus(`✅ Importados ${data.dinamico?.length||0} meses dinámicos`);
+    } catch(err){ alert('JSON inválido: ' + err.message); }
+  };
+  r.readAsText(file);
+}
+
+// ══════════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════════
+function showPanel(id){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const idx = ['tabla','macros','formulas','palancas','github'].indexOf(id);
+  document.querySelectorAll('.nav-tab')[idx]?.classList.add('active');
+  document.getElementById('panel-'+id)?.classList.add('active');
+}
+
+function showStatus(msg, isErr=false){
+  const b = document.getElementById('status-bar');
+  b.textContent = msg; b.style.color = isErr ? 'var(--red)' : 'var(--green)';
+  b.style.display = 'block';
+  setTimeout(()=>b.style.display='none', 3500);
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
 renderTable();
+renderFoodDB();
+renderPalancas();
+renderGHSteps();
+if(ghConfig.user){
+  document.getElementById('gh-user').value = ghConfig.user;
+  document.getElementById('gh-repo').value = ghConfig.repo;
+  document.getElementById('gh-status').textContent = `Config cargada: ${ghConfig.user}/${ghConfig.repo}`;
+}
 </script>
 </body>
 </html>
